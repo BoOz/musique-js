@@ -54,7 +54,7 @@ $(document).ready(function(){
 
 	// console.log(g);
 	// charger un instrument
-	Soundfont.instrument(ac, instrument).then(function (inst) {
+	Soundfont.instrument(ac, instrument,{ gain:1 }).then(function (inst) {
 		
 		var start = ac.currentTime + 0.8 ;
 		var time = ac.currentTime + 0.8;
@@ -68,7 +68,9 @@ $(document).ready(function(){
 		// accompagnement
 		time = start ;
 		instrument = pianos[ pianos.length * Math.random() << 0]
-		Soundfont.instrument(ac, instrument).then(function (piano) {
+		
+		Soundfont.instrument(ac, instrument,{ gain:0.8 }).then(function (piano) {
+		
 			console.log(instrument);
 			document.getElementById("accompagnement").innerHTML = instrument ;
 			// jouer 
