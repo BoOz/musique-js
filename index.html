@@ -54,14 +54,20 @@ $(document).ready(function(){
 
 	// console.log(g);
 	// charger un instrument
-	Soundfont.instrument(ac, instrument,{ gain:1 }).then(function (inst) {
+	Soundfont.instrument(ac, instrument).then(function (inst) {
 		
 		var start = ac.currentTime + 0.8 ;
 		var time = ac.currentTime + 0.8;
 		
 		// jouer la melodie
 		for (i=0; i < m.length; i++){
-			inst.play(m[i].note,time, {duration: m[i].duree});
+			
+			// Temps fort sur le 1
+			var note_gain = 0.9 ;
+			if(i%4 == 1)
+				note_gain = 1 ;
+			
+			inst.play(m[i].note,time, {duration: m[i].duree, gain:note_gain});
 			time = time + m[i].duree ;
 		}
 		
@@ -69,7 +75,8 @@ $(document).ready(function(){
 		time = start ;
 		instrument = pianos[ pianos.length * Math.random() << 0]
 		
-		Soundfont.instrument(ac, instrument,{ gain:0.8 }).then(function (piano) {
+		// un peu derrière le temps
+		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (piano) {
 		
 			console.log(instrument);
 			document.getElementById("accompagnement").innerHTML = instrument ;
@@ -90,8 +97,13 @@ $(document).ready(function(){
 				
 				var accord = notes_accord(g,degre);
 				
+				// Temps fort sur le 1
+				var note_gain = 0.6 ;
+				if(i%4 == 1)
+					note_gain = 0.8 ;
+				
 				accord.forEach(function(e) {
-					piano.play(e,time, {duration: 1});
+					piano.play(e,time, {duration: 1, gain:note_gain});
 				});
 				time += 1 ;
 			}
