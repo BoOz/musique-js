@@ -1,7 +1,11 @@
 # musique-js
 
-Programmer de la musique en javascript en utilisant l'API WebAudio (sons MIDI joués dans le navigateur).
+Musique programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). 
 
+# Usage
+Les sons MIDI sont joués sur commande dans le navigateur.
+
+# Démo
 Écouter [la démo](https://booz.github.io/musique-js/)
 
 > Utilise le lecteur https://github.com/danigb/soundfont-player et les soundfonts https://gleitz.github.io/midi-js-soundfonts/
