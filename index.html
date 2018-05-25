@@ -4,6 +4,28 @@
 	<meta charset="UTF-8">
 	<title>De la musique en MIDI dont la partition est écrite en javascript !</title>
 	<style>
+	
+	#affichage {
+		margin:auto;
+		width:600px;
+		text-align:center;
+		margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+		transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+		
+		font-family:Georgia, "Times New Roman", Times, serif;
+		margin-bottom:-30px;
+		position: relative; 
+		padding-left: 0.4em; 
+	}
+	#affichage p {
+		font-size:2em;
+	}
+	
+	.blink{
+		display:block;
+		font-size:1em;
+		margin-top:2em;
+	}
 		input[type="text"] {
 		width: 90%;
 		display: block;
@@ -17,10 +39,15 @@
 	</style>
 </head>
 <body>
-	<section>
+	<section id="affichage">
 		<h1><span id="titre"></span></h1>
-		<p><small id="accompagnement"></small> <small><i>feat.</i></small> <small id="lead"></small></p>
+		<p>
+			<small>Mélodie :</small> <i><small id="lead"></small></i>
+			<br>
+			<small> Accompagnement :</small> <i><small id="accompagnement"></small></i>
+		</p>
 		<p><small id="afficher_temps"></small><small id="afficher_mesure"></small><small id="mesures"></small></p>
+		<span class="blink">Chargement... </span>
 	</section>
 	<section class="instruments"></section>
 	<script src="dist/jquery-3.3.1.min.js"></script>
@@ -34,7 +61,9 @@
 	<script>
 $(document).ready(function(){
 	// le temps de charger
-	
+	setInterval(blink,2000);
+	setTimeout(function(){$(".blink").remove();},5000);
+
 	var g = gamme(62,"major"); // ré
 	var nb_temps = 32 ;
 	
@@ -51,13 +80,13 @@ $(document).ready(function(){
 	instrument = vents[ vents.length * Math.random() << 0]
 	console.log(instrument);
 	document.getElementById("lead").innerHTML = instrument ;
-
+	
 	// console.log(g);
 	// charger un instrument
 	Soundfont.instrument(ac, instrument).then(function (inst) {
 		
-		var start = ac.currentTime + 0.8 ;
-		var time = ac.currentTime + 0.8;
+		var start = ac.currentTime + 5 ;
+		var time = ac.currentTime + 5 ;
 		
 		// jouer la melodie
 		for (i=0; i < m.length; i++){
@@ -79,6 +108,7 @@ $(document).ready(function(){
 		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (piano) {
 		
 			console.log(instrument);
+			
 			document.getElementById("accompagnement").innerHTML = instrument ;
 			// jouer 
 			for (i=1; i <= nb_temps; i++){
@@ -110,10 +140,17 @@ $(document).ready(function(){
 		time = time -1 ;
 		//console.log("temps final");
 		//console.log(time);
-		//setTimeout(function(){ window.location.reload(true); }, time*1000);
+		setTimeout(function(){ window.location.reload(true); }, time*1000);
 		})
 	})
 });
+
+function blink(){
+	$(".blink").animate({opacity:0},200,"linear",function(){
+		$(this).animate({opacity:1},200);
+	});
+}
+
 	</script>
 	
 </body>
