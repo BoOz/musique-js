@@ -1,10 +1,12 @@
 # musique-js
 
-Musique programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). 
+Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). 
 
 # Usage
 Les sons MIDI sont joués sur commande dans le navigateur.
-Écouter une mélodie aléatoire : [index.html](https://booz.github.io/musique-js/), voir tous les instruments : [demo.html](https://booz.github.io/musique-js/demo.html)
+
+# Démo
+Écouter une mélodie aléatoire : [index.html](https://booz.github.io/musique-js/), voir tous les instruments MIDI : [demo.html](https://booz.github.io/musique-js/demo.html)
 
 > Utilise le lecteur https://github.com/danigb/soundfont-player et les soundfonts https://gleitz.github.io/midi-js-soundfonts/
 
