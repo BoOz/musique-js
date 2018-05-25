@@ -50,7 +50,7 @@ function notes_basse(gamme,degre){
 	if(degre=="II")
 		a = [gamme[2]-24 ] ;
 	if(degre=="V")
-		a = [gamme[5]- 24 ] ;
+		a = [gamme[5]- 36 ] ;
 	return a ;
 }
 

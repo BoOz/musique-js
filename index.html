@@ -119,6 +119,7 @@ $(document).ready(function(){
 			console.log(instrument);
 			document.getElementById("accompagnement").innerHTML = instrument ;
 			
+			var contretemps = 0  ; // 0-1
 			
 			// jouer un note pour chaque temps 
 			for (i=1; i <= nb_temps; i++){
@@ -132,6 +133,8 @@ $(document).ready(function(){
 					degre = "I" ;
 				
 				console.log(i,degre,time);
+				if(i > 16)
+					contretemps = 0.5 ;
 				
 				var accord = notes_accord(g,degre);
 				
@@ -140,8 +143,9 @@ $(document).ready(function(){
 				if(i%4 == 1)
 					note_gain = 0.8 ;
 				
+				
 				accord.forEach(function(e) {
-					piano.play(e,time, {duration: 1, gain:note_gain});
+					piano.play(e,time + contretemps , {duration: 1, gain:note_gain});
 				});
 				time += 1 ;
 			}
@@ -151,7 +155,7 @@ $(document).ready(function(){
 					time = start ;
 					instrument = basses[ basses.length * Math.random() << 0]
 					
-					// un peu derrière le temps
+					// Sur le temps
 					Soundfont.instrument(ac, instrument, {}).then(function (basse){
 						
 						console.log(instrument);
@@ -167,10 +171,6 @@ $(document).ready(function(){
 								degre = "V" ;
 							if(i%8 >= 5 && i%16 >=13)
 								degre = "I" ;
-							
-							//console.log(time);
-							//console.log(i);
-							//console.log(degre);
 							
 							var accord = notes_basse(g,degre);
 							
