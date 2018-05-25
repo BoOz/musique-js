@@ -15,6 +15,7 @@
       cursor: pointer;
     }
   </style>
+  <script src="dist/soundfont-player.js"></script>
 </head>
 <body>
   <section>
@@ -22,7 +23,7 @@
     <button action="play">Play it</button>
   </section>
   <section class="instruments"></section>
-  <script src="/dist/soundfont-player.js"></script>
+  <script src="dist/soundfont-player.js"></script>
   <script>
     var ctx = new AudioContext();
     var soundfont = new Soundfont(ctx);
@@ -67,7 +68,7 @@
     renewMIDIAccess()
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "./assets/musyngkite.json");
+    xhr.open("GET", "assets/musyngkite.json");
     xhr.send();
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
