@@ -35,11 +35,22 @@ function melodie(gamme, nb_temps){
 function notes_accord(gamme,degre){
 	var a = [] ;
 	if(degre=="I")
-		a = [gamme[1] -12, gamme[3]-12, gamme[5]-12,gamme[7]-12] ;
+		a = [gamme[1] -12, gamme[3]-12, gamme[5]-12,gamme[7]-24] ;
 	if(degre=="II")
 		a = [gamme[2]-12, gamme[4]-12, gamme[6]-12,gamme[8]-12] ;
 	if(degre=="V")
-		a = [gamme[2]-12, gamme[4]-12, gamme[7]-12] ;
+		a = [gamme[2]-12, gamme[4]-12, gamme[7]-12 ] ;
+	return a ;
+}
+
+function notes_basse(gamme,degre){
+	var a = [] ;
+	if(degre=="I")
+		a = [gamme[1]-24] ;
+	if(degre=="II")
+		a = [gamme[2]-24 ] ;
+	if(degre=="V")
+		a = [gamme[5]- 24 ] ;
 	return a ;
 }
 

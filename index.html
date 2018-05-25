@@ -46,8 +46,16 @@
 			<small>Mélodie :</small> <i><small id="lead"></small></i>
 			<br>
 			<small> Accompagnement :</small> <i><small id="accompagnement"></small></i>
+			<br>
+			<small> Basse :</small> <i><small id="basse"></small></i>
 		</p>
-		<p><small id="afficher_temps"></small><small id="afficher_mesure"></small><small id="mesures"></small></p>
+		<p>
+			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
+			<small id="mesures"></small>
+		</p>
+		<p>
+			<small id="afficher_degres"></small>
+		</p>
 		<span class="blink">Chargement... </span>
 	</section>
 	<section class="instruments"></section>
@@ -138,10 +146,53 @@ $(document).ready(function(){
 				});
 				time += 1 ;
 			}
-		time = time -1 ;
-		//console.log("temps final");
-		//console.log(time);
-		setTimeout(function(){ window.location.reload(true); }, time*1000);
+			
+					// Basse
+					time = start ;
+					instrument = basses[ basses.length * Math.random() << 0]
+					
+					// un peu derrière le temps
+					Soundfont.instrument(ac, instrument, {}).then(function (basse){
+						
+						console.log(instrument);
+						document.getElementById("basse").innerHTML = instrument ;
+						
+						// jouer 
+						for (i=1; i <= nb_temps; i++){
+							
+							degre = "I" ;
+							if(i%8 >= 1 && i%16 >=9)
+								degre = "II" ;
+							if(i%8 >= 3 && i%16 >=11)
+								degre = "V" ;
+							if(i%8 >= 5 && i%16 >=13)
+								degre = "I" ;
+							
+							//console.log(time);
+							//console.log(i);
+							//console.log(degre);
+							
+							var accord = notes_basse(g,degre);
+							
+							// Temps fort sur le 1
+							var note_gain = 1 ;
+							if(i%4 == 1)
+								note_gain = 1.2 ;
+							
+							accord.forEach(function(e) {
+								basse.play(e,time, {duration: 1, gain:note_gain});
+							});
+							time += 1 ;
+						}
+						
+						time = time -1 ;
+						//console.log("temps final");
+						//console.log(time);
+						setTimeout(function(){ window.location.reload(true); }, time*1000);
+						
+					})
+			
+			
 		})
 	})
 });
