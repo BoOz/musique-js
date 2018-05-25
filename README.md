@@ -4,6 +4,8 @@ Créer de la musique en javascript en utilisant l'API WebAudio qui fait du MIDI 
 
 Feat. https://github.com/danigb/soundfont-player avec les soundfonts https://gleitz.github.io/midi-js-soundfonts/
 
+Écouter [la démo](https://booz.github.io/musique-js/)
+
 
 ```
 Octave  	Note Numbers
