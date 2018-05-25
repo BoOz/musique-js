@@ -4,7 +4,10 @@ Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www
 
 # Usage
 Les sons MIDI sont joués dans le navigateur.
-`insturment.play(note,time, {duration: note_duree, gain:note_gain});`
+
+```
+instrument.play(note, time, {duration: note_duree, gain:note_gain});
+```
 
 # Démo
 - Écouter une mélodie aléatoire : [index.html](https://booz.github.io/musique-js/)
