@@ -4,12 +4,9 @@ Musique programmée en javascript en utilisant l'API [WebAudio](https://www.w3.o
 
 # Usage
 Les sons MIDI sont joués sur commande dans le navigateur.
-
-# Démo
-Écouter [la démo](https://booz.github.io/musique-js/)
+Écouter la démo [index.html](https://booz.github.io/musique-js/)
 
 > Utilise le lecteur https://github.com/danigb/soundfont-player et les soundfonts https://gleitz.github.io/midi-js-soundfonts/
-
 
 # Notes MIDI
 
