@@ -8,6 +8,7 @@ Les sons MIDI sont joués sur commande dans le navigateur.
 # Démo
 Écouter une mélodie aléatoire : [index.html](https://booz.github.io/musique-js/), voir tous les instruments MIDI : [demo.html](https://booz.github.io/musique-js/demo.html)
 
+# Dépendances
 > Utilise le lecteur https://github.com/danigb/soundfont-player et les soundfonts https://gleitz.github.io/midi-js-soundfonts/
 
 # Notes MIDI
