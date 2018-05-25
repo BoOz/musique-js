@@ -3,7 +3,8 @@
 Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). 
 
 # Usage
-Les sons MIDI sont joués sur commande dans le navigateur.
+Les sons MIDI sont joués dans le navigateur.
+`insturment.play(note,time, {duration: note_duree, gain:note_gain});`
 
 # Démo
 - Écouter une mélodie aléatoire : [index.html](https://booz.github.io/musique-js/)
