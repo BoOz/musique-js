@@ -82,6 +82,14 @@ Prog# 	Instrument Name 	Prog# 	Instrument Name 	Prog# 	Instrument Name
 42 	Viola 	85 	Lead 5 (charang) 	128 	Gunshot
 43 	Cello 	86 	Lead 6 (voice) 	  	 
 
+```
+
+# Percussions
+Playing notes on channel 10.
+https://en.wikipedia.org/wiki/General_MIDI#Percussion
+
+```
+
 Select 	Drum Type
 35 	Bass Kick
 36 	Rock Kick
@@ -131,3 +139,6 @@ Select 	Drum Type
 80 	Mute Triangle
 81 	Open Triangle
 ```
+
+http://blog.gleitzman.com/post/63283830260/midijs-playing-audio-in-the-browser-with
+

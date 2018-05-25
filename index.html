@@ -117,9 +117,10 @@ $(document).ready(function(){
 		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (piano) {
 		
 			console.log(instrument);
-			
 			document.getElementById("accompagnement").innerHTML = instrument ;
-			// jouer 
+			
+			
+			// jouer un note pour chaque temps 
 			for (i=1; i <= nb_temps; i++){
 				
 				degre = "I" ;
@@ -130,9 +131,7 @@ $(document).ready(function(){
 				if(i%8 >= 5 && i%16 >=13)
 					degre = "I" ;
 				
-				//console.log(time);
-				//console.log(i);
-				//console.log(degre);
+				console.log(i,degre,time);
 				
 				var accord = notes_accord(g,degre);
 				
@@ -148,6 +147,7 @@ $(document).ready(function(){
 			}
 			
 					// Basse
+					// Dernier instru + commandes
 					time = start ;
 					instrument = basses[ basses.length * Math.random() << 0]
 					
@@ -185,11 +185,12 @@ $(document).ready(function(){
 							time += 1 ;
 						}
 						
-						time = time -1 ;
-						//console.log("temps final");
-						//console.log(time);
-						setTimeout(function(){ window.location.reload(true); }, time*1000);
+						// commandes finales
+						console.log("temps final");
+						console.log(time);
 						
+						// time = time -1 ;
+						setTimeout(function(){ window.location.reload(true); }, time*1000);
 					})
 			
 			

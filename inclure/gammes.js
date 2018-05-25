@@ -20,7 +20,7 @@ function melodie(gamme, nb_temps){
 		note = gamme[ gamme.length * Math.random() << 0]
 		// une durée au hasard
 		duree = subdivisions[ subdivisions.length * Math.random() << 0]
-		if (duree_melodie + duree > nb_temps){
+		if (duree_melodie + duree > nb_temps - 3){
 			duree = nb_temps - duree_melodie ;
 		}
 		//console.log(duree_melodie,duree);
