@@ -10,7 +10,7 @@ instrument.play(note, time, {duration: note_duree, gain:note_gain});
 ```
 
 # Démo
-- Écouter une mélodie au hasard + accompagnement. : [index.html](https://booz.github.io/musique-js/)
+- Écouter une mélodie aléatoire + accompagnement : [index.html](https://booz.github.io/musique-js/)
 - Tester le son de tous les instruments MIDI : [demo.html](https://booz.github.io/musique-js/demo.html)
 
 # Dépendances
