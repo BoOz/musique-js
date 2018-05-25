@@ -1,6 +1,6 @@
 # musique-js
 
-Créer de la musique en javascript en utilisant l'API WebAudio qui fait du MIDI dans le navigateur.
+Programmer de la musique en javascript en utilisant l'API WebAudio (sons MIDI joués dans le navigateur).
 
 Écouter [la démo](https://booz.github.io/musique-js/)
 
