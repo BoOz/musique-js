@@ -25,8 +25,10 @@ Octave  	Note Numbers
 8 	108 	109 	110 	111 	112 	113 	114 	115 	116 	117 	118 	119
 9 	120 	121 	122 	123 	124 	125 	126 	127
 
+```
 # Instruments MIDI
 
+```
 Prog# 	Instrument Name 	Prog# 	Instrument Name 	Prog# 	Instrument Name
 1 	Acoustic Grand Piano 	44 	Contrabass 	87 	Lead 7 (fifths)
 2 	Bright Acoustic Piano 	45 	Tremolo Strings 	88 	Lead 8 (bass + lead)
