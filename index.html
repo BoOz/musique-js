@@ -133,7 +133,7 @@ $(document).ready(function(){
 					degre = "I" ;
 				
 				console.log(i,degre,time);
-				if(i > 16)
+				if(i > 15)
 					contretemps = 0.5 ;
 				
 				var accord = notes_accord(g,degre);
@@ -142,7 +142,6 @@ $(document).ready(function(){
 				var note_gain = 0.6 ;
 				if(i%4 == 1)
 					note_gain = 0.8 ;
-				
 				
 				accord.forEach(function(e) {
 					piano.play(e,time + contretemps , {duration: 1, gain:note_gain});
