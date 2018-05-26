@@ -71,7 +71,7 @@
 $(document).ready(function(){
 	// le temps de charger
 	setInterval(blink,2000);
-	setTimeout(function(){$(".blink").remove();},5000);
+	setTimeout(function(){$(".blink").remove();},7000);
 
 	var g = gamme(62,"major"); // ré
 	var nb_temps = 32 ;
@@ -94,8 +94,8 @@ $(document).ready(function(){
 	// charger un instrument
 	Soundfont.instrument(ac, instrument).then(function (inst) {
 		
-		var start = ac.currentTime + 5 ;
-		var time = ac.currentTime + 5 ;
+		var start = ac.currentTime + 7 ;
+		var time = ac.currentTime + 7 ;
 		
 		// jouer la melodie
 		for (i=0; i < m.length; i++){
@@ -150,50 +150,77 @@ $(document).ready(function(){
 				time += 1 ;
 			}
 			
-					// Basse
-					// Dernier instru + commandes
-					time = start ;
-					instrument = basses[ basses.length * Math.random() << 0]
+			// Basse
+			time = start ;
+			instrument = basses[ basses.length * Math.random() << 0]
+			
+			// Sur le temps
+			Soundfont.instrument(ac, instrument, {}).then(function (basse){
+				
+				console.log(instrument);
+				document.getElementById("basse").innerHTML = instrument ;
+				
+				// jouer 
+				for (i=1; i <= nb_temps; i++){
 					
-					// Sur le temps
-					Soundfont.instrument(ac, instrument, {}).then(function (basse){
+					degre = "I" ;
+					if(i%8 >= 1 && i%16 >=9)
+						degre = "II" ;
+					if(i%8 >= 3 && i%16 >=11)
+						degre = "V" ;
+					if(i%8 >= 5 && i%16 >=13)
+						degre = "I" ;
+					
+					var accord = notes_basse(g,degre);
+					
+					// Temps fort sur le 1
+					var note_gain = 1 ;
+					if(i%4 == 1)
+						note_gain = 1.2 ;
+					
+					accord.forEach(function(e) {
+						basse.play(e,time, {duration: 1, gain:note_gain});
+					});
+					time += 1 ;
+				}
+				
+				// Percus
+				// Dernier instru + commandes
+				time = start ;
+				instrument = "percussion";
+				
+				// Sur le temps
+				Soundfont.instrument(ac, instrument, { gain:0.8 , soundfont: 'FluidR3_GM' } ).then(function (percus){
+					
+					console.log(instrument);
+					
+					// jouer 
+					for (i=1; i <= nb_temps; i++){
 						
-						console.log(instrument);
-						document.getElementById("basse").innerHTML = instrument ;
-						
-						// jouer 
-						for (i=1; i <= nb_temps; i++){
-							
+						degre = "I" ;
+						if(i%8 >= 1 && i%16 >=9)
+							degre = "II" ;
+						if(i%8 >= 3 && i%16 >=11)
+							degre = "V" ;
+						if(i%8 >= 5 && i%16 >=13)
 							degre = "I" ;
-							if(i%8 >= 1 && i%16 >=9)
-								degre = "II" ;
-							if(i%8 >= 3 && i%16 >=11)
-								degre = "V" ;
-							if(i%8 >= 5 && i%16 >=13)
-								degre = "I" ;
-							
-							var accord = notes_basse(g,degre);
-							
-							// Temps fort sur le 1
-							var note_gain = 1 ;
-							if(i%4 == 1)
-								note_gain = 1.2 ;
-							
-							accord.forEach(function(e) {
-								basse.play(e,time, {duration: 1, gain:note_gain});
-							});
-							time += 1 ;
-						}
 						
-						// commandes finales
-						console.log("temps final");
-						console.log(time);
+						var delay = 0.5 ;
 						
-						// time = time -1 ;
-						setTimeout(function(){ window.location.reload(true); }, time*1000);
-					})
-			
-			
+						// 49 	Crash Cymbal 1
+						percus.play(35,time , {duration: 1});
+						percus.play(40,time + delay , {duration: 1});
+						time += 1 ;
+					}
+					
+					// commandes finales
+					console.log("temps final");
+					console.log(time);
+					
+					// time = time -1 ;
+					setTimeout(function(){ window.location.reload(true); }, time*1000);
+				})
+			})
 		})
 	})
 });
