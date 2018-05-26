@@ -12,4 +12,8 @@ var pianos = [
   "electric_piano_1",
   "electric_piano_2",
   "electric_grand_piano",
+  "brass_section",
+  "vibraphone",
+  "choir_aahs",
+  "pad_5_bowed",
 ]

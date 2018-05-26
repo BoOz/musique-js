@@ -50,7 +50,7 @@
 			<small> Basse :</small> <i><small id="basse"></small></i>
 		</p>
 		<p>
-			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
+			<small id="afficher_temps">0</small><small id="afficher_mesure"></small>
 			<small id="mesures"></small>
 		</p>
 		<p>
@@ -132,7 +132,6 @@ $(document).ready(function(){
 				if(i%8 >= 5 && i%16 >=13)
 					degre = "I" ;
 				
-				console.log(i,degre,time);
 				if(i > 15)
 					contretemps = 0.5 ;
 				
@@ -209,6 +208,8 @@ $(document).ready(function(){
 						// 49 	Crash Cymbal 1
 						percus.play(35,time , {duration: 1});
 						percus.play(40,time + delay , {duration: 1});
+						
+						console.log(i,nb_temps,degre,time);
 						time += 1 ;
 					}
 					
