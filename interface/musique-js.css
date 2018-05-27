@@ -1,0 +1,33 @@
+#affichage {
+	font-size:1.5em;
+	margin:auto;
+	width:600px;
+	text-align:center;
+	margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+	transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+	
+	font-family:Georgia, "Times New Roman", Times, serif;
+	margin-bottom:-30px;
+	position: relative; 
+	padding-left: 0.4em; 
+}
+#affichage p {
+	font-size:1.5em;
+}
+
+.blink{
+	display:block;
+	font-size:1em;
+	margin-top:2em;
+}
+
+input[type="text"] {
+width: 90%;
+display: block;
+font-size: 24px;
+}
+.instruments label {
+display: inline-block;
+width: 200px;
+cursor: pointer;
+}

@@ -1,43 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 	<meta charset="UTF-8">
 	<title>Musique en MIDI dont la partition est écrite en javascript.</title>
-	<style>
-	
-	#affichage {
-		font-size:1.5em;
-		margin:auto;
-		width:600px;
-		text-align:center;
-		margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
-		transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
-		
-		font-family:Georgia, "Times New Roman", Times, serif;
-		margin-bottom:-30px;
-		position: relative; 
-		padding-left: 0.4em; 
-	}
-	#affichage p {
-		font-size:1.5em;
-	}
-	
-	.blink{
-		display:block;
-		font-size:1em;
-		margin-top:2em;
-	}
-		input[type="text"] {
-		width: 90%;
-		display: block;
-		font-size: 24px;
-		}
-		.instruments label {
-		display: inline-block;
-		width: 200px;
-		cursor: pointer;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="interface/musique-js.css">
 </head>
 <body>
 	<section id="affichage">
@@ -74,10 +40,15 @@ $(document).ready(function(){
 	setTimeout(function(){$(".blink").remove();},5000);
 	var start = 5 ;
 	
-	var g = gamme(62,"major"); // ré
+	var keys = Object.keys(tonalites) ;
+	var tonalite = keys[ keys.length * Math.random() << 0] ;
+	
+	console.log(tonalite, tonalites[tonalite]);
+	
+	var g = gamme(tonalites[tonalite],"major"); // Fa
 	var nb_temps = 32 ;
 	
-	document.getElementById("titre").innerHTML = "Mélodie aléatoire en ré majeur" ;
+	document.getElementById("titre").innerHTML = "Mélodie aléatoire en " + tonalite + " majeur" ;
 	document.getElementById("mesures").innerHTML = " / "  + nb_temps ;
 	
 	var m = melodie(g, nb_temps);
