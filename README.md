@@ -141,6 +141,6 @@ Select 	Drum Type
 ```
 
 
-# Theorie musicale
+# Théorie musicale
 https://danigb.github.io/tonal-app/
 
