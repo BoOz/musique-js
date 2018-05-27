@@ -1,6 +1,6 @@
 # musique-js
 
-Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). 
+Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). Voir aussi http://blog.gleitzman.com/post/63283830260/midijs-playing-audio-in-the-browser-with
 
 # Usage
 Les sons MIDI sont joués dans le navigateur.
@@ -140,5 +140,7 @@ Select 	Drum Type
 81 	Open Triangle
 ```
 
-http://blog.gleitzman.com/post/63283830260/midijs-playing-audio-in-the-browser-with
+
+# Theorie musicale
+https://danigb.github.io/tonal-app/
 
