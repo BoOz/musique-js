@@ -16,4 +16,8 @@ var pianos = [
   "vibraphone",
   "choir_aahs",
   "pad_5_bowed",
+  "string_ensemble_1",
+  "string_ensemble_2",
+//  "synthstrings_1",
+//  "synthstrings_2",
 ]

@@ -71,8 +71,9 @@
 $(document).ready(function(){
 	// le temps de charger
 	setInterval(blink,2000);
-	setTimeout(function(){$(".blink").remove();},7000);
-
+	setTimeout(function(){$(".blink").remove();},5000);
+	var start = 5 ;
+	
 	var g = gamme(62,"major"); // ré
 	var nb_temps = 32 ;
 	
@@ -91,11 +92,13 @@ $(document).ready(function(){
 	document.getElementById("lead").innerHTML = instrument ;
 	
 	// console.log(g);
+	
+	var time = start ;
+	
 	// charger un instrument
 	Soundfont.instrument(ac, instrument).then(function (inst) {
 		
-		var start = ac.currentTime + 7 ;
-		var time = ac.currentTime + 7 ;
+		console.log("melody : " + instrument + ", ac.currrentTime : " + ac.currentTime);
 		
 		// jouer la melodie
 		for (i=0; i < m.length; i++){
@@ -105,7 +108,7 @@ $(document).ready(function(){
 			if(i%4 == 1)
 				note_gain = 1 ;
 			
-			inst.play(m[i].note,time, {duration: m[i].duree, gain:note_gain});
+			inst.play(m[i].note, time, {duration: m[i].duree, gain:note_gain});
 			time = time + m[i].duree ;
 		}
 		
@@ -115,8 +118,8 @@ $(document).ready(function(){
 		
 		// un peu derrière le temps
 		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (piano) {
-		
-			console.log(instrument);
+			
+			console.log("accompagnement : " + instrument + ", ac.currrentTime : " + ac.currentTime);
 			document.getElementById("accompagnement").innerHTML = instrument ;
 			
 			var contretemps = 0  ; // 0-1
@@ -155,7 +158,7 @@ $(document).ready(function(){
 			// Sur le temps
 			Soundfont.instrument(ac, instrument, {}).then(function (basse){
 				
-				console.log(instrument);
+				console.log("Basse : " + instrument + ", ac.currrentTime : " + ac.currentTime);
 				document.getElementById("basse").innerHTML = instrument ;
 				
 				// jouer 
@@ -190,17 +193,26 @@ $(document).ready(function(){
 				// Sur le temps
 				Soundfont.instrument(ac, instrument, { gain:0.8 , soundfont: 'FluidR3_GM' } ).then(function (percus){
 					
-					console.log(instrument);
+					console.log("Percussions : " + instrument + ", ac.currrentTime : " + ac.currentTime);
 					
 					// jouer 
-					for (i=1; i <= nb_temps; i++){
+					for (t=1; t <= nb_temps; t++){
+						
+						// fonction immédiatement invoquée pour compter les temps
+						(function(t,time,start) {
+							setTimeout(function(){
+								// console.log("temps : " + t + " time : " + time + " start : " + start);
+								$("#afficher_temps").html(t);
+							},(time - ac.currentTime) * 1000
+							);
+						})(t,time,start);
 						
 						degre = "I" ;
-						if(i%8 >= 1 && i%16 >=9)
+						if(t%8 >= 1 && t%16 >=9)
 							degre = "II" ;
-						if(i%8 >= 3 && i%16 >=11)
+						if(t%8 >= 3 && t%16 >=11)
 							degre = "V" ;
-						if(i%8 >= 5 && i%16 >=13)
+						if(t%8 >= 5 && t%16 >=13)
 							degre = "I" ;
 						
 						var delay = 0.5 ;
@@ -209,15 +221,12 @@ $(document).ready(function(){
 						percus.play(35,time , {duration: 1});
 						percus.play(40,time + delay , {duration: 1});
 						
-						console.log(i,nb_temps,degre,time);
 						time += 1 ;
 					}
 					
 					// commandes finales
-					console.log("temps final");
-					console.log(time);
+					console.log("temps à la fin : " + time + " dont " + start + " de délai de chargement soit "+ (time - start) +".");
 					
-					// time = time -1 ;
 					setTimeout(function(){ window.location.reload(true); }, time*1000);
 				})
 			})
