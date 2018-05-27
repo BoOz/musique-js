@@ -63,7 +63,7 @@
 	<script src="dist/soundfont-player.js"></script>
 	<script src="inclure/gammes.js"></script>
 	<script src="instruments/vents.js"></script>
-	<script src="instruments/pianos.js"></script>
+	<script src="instruments/accompagnements.js"></script>
 	<script src="instruments/basses.js"></script>
 	<script src="instruments/percussions.js"></script>
 
@@ -114,10 +114,10 @@ $(document).ready(function(){
 		
 		// accompagnement
 		time = start ;
-		instrument = pianos[ pianos.length * Math.random() << 0]
+		instrument = accompagnements[ accompagnements.length * Math.random() << 0]
 		
 		// un peu derrière le temps
-		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (piano) {
+		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (accompagnement) {
 			
 			console.log("accompagnement : " + instrument + ", ac.currrentTime : " + ac.currentTime);
 			document.getElementById("accompagnement").innerHTML = instrument ;
@@ -146,7 +146,7 @@ $(document).ready(function(){
 					note_gain = 0.8 ;
 				
 				accord.forEach(function(e) {
-					piano.play(e,time + contretemps , {duration: 1, gain:note_gain});
+					accompagnement.play(e,time + contretemps , {duration: 1, gain:note_gain});
 				});
 				time += 1 ;
 			}

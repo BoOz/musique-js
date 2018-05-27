@@ -1,4 +1,4 @@
-var pianos = [
+var accompagnements = [
   "acoustic_grand_piano",
   "bright_acoustic_piano",
   "church_organ",
