@@ -1,6 +1,6 @@
 # musique-js
 
-Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). Voir aussi http://blog.gleitzman.com/post/63283830260/midijs-playing-audio-in-the-browser-with
+Musique MIDI programmée en javascript en utilisant l'API [WebAudio](https://www.w3.org/TR/webaudio/). Voir aussi  [playing-audio-in-the-browser](http://blog.gleitzman.com/post/63283830260/midijs-playing-audio-in-the-browser-with)
 
 # Usage
 Les sons MIDI sont joués dans le navigateur.
