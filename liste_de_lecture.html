@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Musique en MIDI dont la partition est écrite en javascript.</title>
+	<link rel="stylesheet" type="text/css" href="interface/musique-js.css">
+</head>
+<body>
+	<section id="affichage">
+		<h1><span id="titre">Liste de lecture</span></h1>
+		<div style="width:100%">
+			<div id="grille" style="text-align:left;">
+			</div>
+		</div>
+		<p>
+			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
+			<small id="mesures"></small>
+		</p>
+		<p>
+			<small id="afficher_degres"></small>
+		</p>
+		<span class="blink">Chargement... </span>
+	</section>
+	<section class="instruments"></section>
+	<script>
+	// AudioContext support
+	var AudioContext = window.AudioContext // Default
+	|| window.webkitAudioContext // Safari and old versions of Chrome
+	</script>
+	<script src="dist/jquery-3.3.1.min.js"></script>
+	<script src="dist/soundfont-player.js"></script>
+	<script src="inclure/gammes.js"></script>
+
+	<script src="instruments/vents.js"></script>
+	<script src="instruments/accompagnements.js"></script>
+	<script src="instruments/basses.js"></script>
+	<script src="instruments/percussions.js"></script>
+
+	<script src="listes_de_lecture/morceaux.js"></script>
+
+	<script>
+$(document).ready(function(){
+	// le temps de charger
+	setInterval(blink,1500);
+	
+	var id = setTimeout(function(){$(".blink").remove();},3000);
+	var start = 5 ;
+	
+	var objet = liste_de_lecture ;
+	var keys = Object.keys(objet) ;
+	var v = keys[ keys.length * Math.random() << 0] ;
+	//console.log(v, objet[v]["titre"], objet[v]["accompagement"]);
+	
+	var id2 = setTimeout(function(){
+
+		// Edit here
+		document.getElementById("titre").innerHTML = objet[v]["titre"] ;
+		document.getElementById("grille").innerHTML = objet[v]["accompagement"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
+		
+		var grille = objet[v]["accompagement"]	.replace(/(?:\r\n|\r|\n|\t)/g, ' ')
+												.replace(/\s/g, ' ')
+		
+		
+		var mesures = grille.split("||");
+		
+		// console.log(grille, mesures);
+		
+		var parties = [] ;
+		var nb_parties = 0 ;
+		var nb_mesures = 0 ;
+		
+		var instruments = [] ;
+		var tempo = "" ;
+		
+		mesures.forEach(function(e,i) {
+			e = e.trim();
+			if(e){
+				// Grille ?
+				if(e.match(/\|/g)){
+					
+					e = e
+						.replace(/\| \|/g,"|")
+					;
+					
+					// console.log(i,e);
+					
+					// compter le nombre de mesures
+					// console.log(e.split("|").length);
+					nb_mesures = nb_mesures + e.split("|").length ;
+					nb_parties ++ ;
+					e = e
+						.replace(/\| \|/g,"|")
+						.replace(/ *: */g,"")
+						;
+					
+					
+					var a = [] ;
+					var accords = e.split("|") ;
+					accords.forEach(function(e,i) {
+						e = e.trim();
+						detail = e.match(/([A-G])(.*)/);
+						//console.log(detail[1],detail[2]);
+						a.push([detail[1],detail[2]]);
+					});
+					parties.push(a) ;
+				}else{
+				// Metas ?
+					// console.log(i,e);
+					
+					switch(e) {
+						case "Piano":
+							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
+							instruments.push(instrument);
+							break;
+						case "Choirs":
+							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
+							instruments.push(instrument);
+							break;
+						case "Basse":
+							instrument = basses[ basses.length * Math.random() << 0]
+							instruments.push(instrument);
+							break;
+						case "Batterie":
+							instruments.push("percussion");
+							break;
+						case "4/4":
+							tempo = 4 ;
+							break;
+					} 
+					
+					
+					
+				}
+			}
+		});
+
+		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", tempo, instruments);
+		
+		// console.log(parties);
+		
+		parties.forEach(function(e,i) {
+			console.log(i,e);
+		});
+		
+		// fin edit
+	},3000);
+	
+});
+
+function blink(){
+	$(".blink").animate({opacity:0},200,"linear",function(){
+		$(this).animate({opacity:1},200);
+		document.getElementById("grille").innerHTML = "..." .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
+	});
+}
+
+	</script>
+	
+</body>
+</html>
