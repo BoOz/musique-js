@@ -13,7 +13,8 @@
 			</div>
 		</div>
 		<p>
-			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
+			<small id="afficher_temps"></small>
+			<small id="afficher_mesure"></small>
 			<small id="mesures"></small>
 		</p>
 		<p>
@@ -134,12 +135,36 @@ $(document).ready(function(){
 			}
 		});
 
-		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", tempo, instruments);
+		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", tempo, instruments.length + " instruments ", instruments);
+		
+		document.getElementById("mesures").innerHTML = "/" + nb_mesures ;
+		document.getElementById("afficher_mesure").innerHTML = "0" ;
 		
 		// console.log(parties);
 		
 		parties.forEach(function(e,i) {
 			console.log(i,e);
+		});
+		
+		
+		// Jouer la partition
+		var time = 5 ; // délais de chargement
+		var ac = new AudioContext() ;
+		var options = {} ;
+		
+		instruments.forEach(function(e,i) {
+			
+			if(e == "percussion"){
+				e = "percussion" ;
+				options = { gain:0.8 , soundfont: 'FluidR3_GM' }
+			}
+			
+			Soundfont.instrument(ac, e, options).then(function (inst) {
+				
+				inst.play('C4',time, {duration: 1});
+				console.log("inst : " + e + ", ac.currrentTime : " + ac.currentTime, inst);
+			
+			});
 		});
 		
 		// fin edit
