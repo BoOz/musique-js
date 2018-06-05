@@ -1,35 +1,44 @@
-/*.playliste */
+/*.playliste
+
+|| %Cadence 		|| (4/4 | 6/8 | ..)
+|| %Tempo 			|| (100 // 60  = 1 temps par seconde.)
+|| %Instrument 		|| (Piano | Basse | percussion | ...)
+|| %delai attaque / temps	|| (+|++|-|--)
+
+*/
 
 var liste_de_lecture = {
 
+/**/
+
 "01": {
-	"titre" : "Majeur",
-	"accompagement" : `
+	"titre" : "II-V-I Majeur",
+	"accompagnement" : `
+|| 4/4 ||
+|| 100 ||
 || Choirs ||
 || Basse ||
 || Batterie ||
-|| 4/4 ||
 ||:	Dm7	|	G7	|	Cmaj7	|	Cmaj7	  |
-|	B7	|	E7	|	Am7 	|	Am7 	:||
-||:	Dm7	|	G7	|	Cmaj7	|	Cmaj7	  |
-|	B7	|	E7	|	Am7 	|	Am7 	:||
+|	Gm7	|	C7	|	Fmaj7	|	Fmaj7	:||
+||:	Cm7	|	F7	|	Bbmaj7	|	Bbmaj7	  |
+|	Fm7	|	Bb7	|	Ebmaj7 	|	Ebmaj7 	:||
 `},
 
+
+
 "02": {
-		"titre" : "Mixolydien",
-		"accompagement" : `
-|| Piano ||
-|| Basse ||
-|| Batterie ||
+		"titre" : "Frère Jean-Pierre",
+		"accompagnement" : `
 || 4/4 ||
-||:	F7	|	G7	|	C7	|	C7	  |
-|	B7	|	E7	|	Am7	|	Am7	:||
-||:	F7	|	G7	|	C7	|	C7	  |
-|	B7	|	E7	|	Am7	|	Am7	:||
-||:	F7	|	G7	|	C7	|	C7	  |
-|	B7	|	E7	|	Am7	|	Am7	:||
-||:	F7	|	G7	|	C7	|	C7	  |
-|	B7	|	E7	|	Am7	|	Am7	:||
+|| 60 ||
+|| Piano ||
+|| Basse + ||
+|| Batterie ||
+||:	G7	|	G7	|	G7	|	G7	  |
+|	G7	|	G7	|	G7	|	G7	:||
 `},
+
+
 
 }

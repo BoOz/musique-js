@@ -50,15 +50,15 @@ $(document).ready(function(){
 	var objet = liste_de_lecture ;
 	var keys = Object.keys(objet) ;
 	var v = keys[ keys.length * Math.random() << 0] ;
-	//console.log(v, objet[v]["titre"], objet[v]["accompagement"]);
+	//console.log(v, objet[v]["titre"], objet[v]["accompagnement"]);
 	
 	var id2 = setTimeout(function(){
 
 		// Edit here
 		document.getElementById("titre").innerHTML = objet[v]["titre"] ;
-		document.getElementById("grille").innerHTML = objet[v]["accompagement"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
+		document.getElementById("grille").innerHTML = objet[v]["accompagnement"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
 		
-		var grille = objet[v]["accompagement"]	.replace(/(?:\r\n|\r|\n|\t)/g, ' ')
+		var grille = objet[v]["accompagnement"]	.replace(/(?:\r\n|\r|\n|\t)/g, ' ')
 												.replace(/\s/g, ' ')
 		
 		
@@ -71,7 +71,6 @@ $(document).ready(function(){
 		var nb_mesures = 0 ;
 		
 		var instruments = [] ;
-		var tempo = "" ;
 		
 		mesures.forEach(function(e,i) {
 			e = e.trim();
@@ -99,7 +98,7 @@ $(document).ready(function(){
 					var accords = e.split("|") ;
 					accords.forEach(function(e,i) {
 						e = e.trim();
-						detail = e.match(/([A-G])(.*)/);
+						detail = e.match(/([A-Gb#]+)(.*)/);
 						//console.log(detail[1],detail[2]);
 						a.push([detail[1],detail[2]]);
 					});
@@ -108,64 +107,139 @@ $(document).ready(function(){
 				// Metas ?
 					// console.log(i,e);
 					
+					// intercepter les delais + / -
+					var delai = 0 ;
+					var res = e.match(/\++/gi) ;
+					if(res){
+						// nombre de quart de temps de delais + ou -
+						delai = res[0].length * duree_temps / cadence
+						
+						e = e.replace(/\++/gi, "").trim();
+						console.log(">" + e + "<", res, delai);
+					}
+					
 					switch(e) {
 						case "Piano":
 							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
-							instruments.push(instrument);
+							instruments.push([instrument,delai]);
 							break;
 						case "Choirs":
 							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
-							instruments.push(instrument);
+							instruments.push([instrument,delai]);
 							break;
 						case "Basse":
 							instrument = basses[ basses.length * Math.random() << 0]
-							instruments.push(instrument);
+							instruments.push([instrument,delai]);
 							break;
 						case "Batterie":
-							instruments.push("percussion");
+							instruments.push(["percussion",delai]);
 							break;
 						case "4/4":
-							tempo = 4 ;
+							cadence = 4 ;
 							break;
 					} 
 					
-					
-					
+					if(parseInt(e)){
+						//console.log("yeah ",parseInt(e) );
+						tempo = e ;
+						duree_temps = 60 / tempo ;
+					}
 				}
 			}
 		});
 
-		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", tempo, instruments.length + " instruments ", instruments);
+		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", cadence, instruments.length + " instruments - tempo = " + tempo);
 		
 		document.getElementById("mesures").innerHTML = "/" + nb_mesures ;
 		document.getElementById("afficher_mesure").innerHTML = "0" ;
 		
 		// console.log(parties);
+		// que joue l'instrument dans chaque partie
+		var morceau = [] ;
+		var notes = [] ;
 		
 		parties.forEach(function(e,i) {
-			console.log(i,e);
+			// console.log(i,e);
+			var partie = "Partie " + (i+1) ;
+			morceau[partie] = [];
+			morceau[partie]["Notes"] = [] ;
+			morceau[partie]["Accords"] = [] ;
+			e.forEach(function(n,i) {
+				morceau[partie]["Notes"].push(n[0]) ;
+				notes.push(n[0]) ;
+				morceau[partie]["Accords"].push(n[0] + n[1]) ;
+			});
 		});
 		
+		// console.log(morceau);
+		
+		console.log(notes);
 		
 		// Jouer la partition
-		var time = 5 ; // délais de chargement
+		var start = 5 ;
+		var time = start ; // délais de chargement
+		var nb_temps = nb_mesures * cadence ;
 		var ac = new AudioContext() ;
 		var options = {} ;
 		
 		instruments.forEach(function(e,i) {
 			
-			if(e == "percussion"){
-				e = "percussion" ;
-				options = { gain:0.8 , soundfont: 'FluidR3_GM' }
+			if(e[0] == "percussion"){
+				options = { gain:0.8 , soundfont: 'FluidR3_GM' , delay:e[1]}
 			}
 			
-			Soundfont.instrument(ac, e, options).then(function (inst) {
+			Soundfont.instrument(ac, e[0], options).then(function (inst) {
 				
-				inst.play('C4',time, {duration: 1});
-				console.log("inst : " + e + ", ac.currrentTime : " + ac.currentTime, inst);
-			
+				console.log("inst :> " + e[0] + " - delai : " + e[1] + " - ac.currrentTime : " + ac.currentTime);
+				time = start ;
+				delai = e[1] ;
+				// swicth par type d'instruments (percussion, basse, accompagnement)
+				var index_note = 0 ;
+				
+				for (t=1; t <= nb_temps; t++){
+					
+					var temps_relatif = t%cadence ;
+					
+					var note = notes[index_note]
+					// Temps fort sur le 1
+					var note_gain = 1 ;
+					if(temps_relatif == 1)
+						note_gain = 1.2 ;
+					
+					// console.log(e, "oooh" , e.match(/.*bass.*/i));
+					// console.log(e);
+					if(e[0].match(/.*bass.*/i)){
+						//console.log(notes + " " + index_note + " (" + notes[index_note] + ") >> " + temps_relatif);
+						
+						if(t%2 == 1)
+							inst.play(notes[index_note] + "2",time + delai, {duration: 2 * duree_temps, gain:note_gain});
+					}
+					
+					if(e[0].match('percu')){
+						console.log("percu");
+						// 49 	Crash Cymbal 1
+						inst.play(35,time , {duration: duree_temps});
+						if(t%2 == 0)
+							inst.play(40,time, {duration: duree_temps});
+					}
+					
+					//console.log(e[0] + "temps : " + temps_relatif + " /" + index_note + "/ ("+ t +")")
+					time += duree_temps ;
+					
+					if(temps_relatif == 0)
+						index_note += 1 ;
+					
+					// 
+				}
+				
+				//  fin du morceau
+				if(i == 0){ // une seule fois
+					// setTimeout(function(){ window.location.reload(true); }, time*1000);
+					console.log("Fin", time,i);
+				}
 			});
 		});
+		
 		
 		// fin edit
 	},3000);
