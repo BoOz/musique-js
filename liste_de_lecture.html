@@ -157,6 +157,7 @@ $(document).ready(function(){
 		// que joue l'instrument dans chaque partie
 		var morceau = [] ;
 		var notes = [] ;
+		var accords = [] ;
 		
 		parties.forEach(function(e,i) {
 			// console.log(i,e);
@@ -167,6 +168,7 @@ $(document).ready(function(){
 			e.forEach(function(n,i) {
 				morceau[partie]["Notes"].push(n[0]) ;
 				notes.push(n[0]) ;
+				accords.push([n[0],n[1]])
 				morceau[partie]["Accords"].push(n[0] + n[1]) ;
 			});
 		});
@@ -202,19 +204,34 @@ $(document).ready(function(){
 					
 					var note = notes[index_note]
 					// Temps fort sur le 1
-					var note_gain = 1 ;
+					var note_gain = 0.5 ;
 					if(temps_relatif == 1)
-						note_gain = 1.2 ;
+						note_gain = 0.8 ;
 					
-					// console.log(e, "oooh" , e.match(/.*bass.*/i));
-					// console.log(e);
+					// "Accompagnement"
+					if(e[0].match(/.*(piano|choir|phone|string|organ|brass).*/i)){
+						//console.log("accords yeah", accords[index_note]);
+						
+						// console.log(t,index_note,accords[index_note]);
+						//1 0 Array [ "D", "m7" ]
+						
+						var accord = notes_accord(accords[index_note][1],accords[index_note][0],0);
+						//console.log(accord);
+						
+						accord.forEach(function(e,i) {
+							inst.play(e,time + delai, {duration: 0.8 * duree_temps, gain:note_gain});
+						});
+					}
+					
+					// "Basse"
 					if(e[0].match(/.*bass.*/i)){
 						//console.log(notes + " " + index_note + " (" + notes[index_note] + ") >> " + temps_relatif);
 						
-						if(t%2 == 1)
+						if(t%2 == 1) // octave 2
 							inst.play(notes[index_note] + "2",time + delai, {duration: 2 * duree_temps, gain:note_gain});
 					}
 					
+					// "Percu"
 					if(e[0].match('percu')){
 						console.log("percu");
 						// 49 	Crash Cymbal 1
@@ -226,6 +243,7 @@ $(document).ready(function(){
 					//console.log(e[0] + "temps : " + temps_relatif + " /" + index_note + "/ ("+ t +")")
 					time += duree_temps ;
 					
+					// fragile, si pas 4 temps
 					if(temps_relatif == 0)
 						index_note += 1 ;
 					
@@ -234,7 +252,7 @@ $(document).ready(function(){
 				
 				//  fin du morceau
 				if(i == 0){ // une seule fois
-					// setTimeout(function(){ window.location.reload(true); }, time*1000);
+					setTimeout(function(){ window.location.reload(true); }, time*1000);
 					console.log("Fin", time,i);
 				}
 			});
@@ -245,6 +263,49 @@ $(document).ready(function(){
 	},3000);
 	
 });
+
+function notes_accord(type,fondamentale,renversement){
+
+	var midiNote = note2midi[fondamentale];
+	var accord = [] ;
+	var distance_a_do = 0 ; // C4 = 60 ;
+	// console.log(type, accords, accords[type]);
+	console.log("Jouer " + fondamentale + type + " (" + midiNote + ")", accords[type]);
+	
+	var total = 0;
+	accords[type].forEach(function(e,i) {
+		total += midiNote + e ;
+		accord.push(midiNote + e);
+	});
+	
+	var avg = total / accord.length;
+	distance_a_do = avg - 60;
+	var dist = 0 ;
+	console.log("moyenne renversement 0 : " + distance_a_do);
+	console.log(accord);
+	
+	// tester l aproximite a do4 de 10 renversements
+	var renversement = [] ;
+	for(i=0;i<2;i++){
+		renversement = renversement_accord(accord,true);
+		renversement[0] = renversement[0] - 12 ;
+		
+		var total = 0;
+		renversement.forEach(function(e,i) {
+			total += e ;
+		});
+		
+		avg = total / accord.length;
+		dist = Math.abs(avg - 60) ;
+		if(distance_a_do > dist){
+			distance_a_do = dist ;
+			console.log("moyenne renversement : i " + distance_a_do);
+			accord = renversement ;
+			console.log(renversement);
+		}
+	}
+	return accord ;
+}
 
 function blink(){
 	$(".blink").animate({opacity:0},200,"linear",function(){

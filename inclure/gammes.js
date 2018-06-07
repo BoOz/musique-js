@@ -1,20 +1,39 @@
 // C 	C# 	D 	D# 	E 	F 	F# 	G 	G# 	A 	A# 	B
 // 60 	61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	71
 
-var tonalites = {
+var note2midi = {
 		"C": 60,
 		"C#": 61,
+		"Db": 61,
 		"D": 62,
 		"D#": 63,
+		"Eb": 63,
 		"E": 64,
 		"F": 65,
 		"F#": 66,
+		"Gb": 66,
 		"G": 67,
 		"G#": 68,
+		"Ab": 68,
 		"A": 69,
 		"A#": 70,
+		"Bb": 70,
 		"B": 71,
 	}
+
+var accords = {
+	"7": [0,4,7,9],
+	"maj7": [0,4,7,11],
+	"m7": [0,3,7,9],
+}
+
+function renversement_accord(accord,reverse){
+  if(reverse)
+    accord.unshift(accord.pop())
+  else
+    accord.push(accord.shift())
+  return accord
+}
 
 function gamme(tonic,scale){
 	// gamme indexée a partir de 1
