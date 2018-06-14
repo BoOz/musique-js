@@ -144,3 +144,18 @@ Select 	Drum Type
 # Théorie musicale
 https://danigb.github.io/tonal-app/
 
+# Programmation
+## Notation musicale
+https://en.wikipedia.org/wiki/Scientific_pitch_notation
+https://github.com/danigb/scorejs/blob/master/dist/score.js#L852
+https://github.com/danigb/tonal/tree/master/packages
+https://github.com/danigb/microtonal
+https://github.com/danigb/note-parser
+http://my.vexflow.com/articles/134
+
+
+# Affichage de partitions
+https://github.com/0xfe/vexflow
+https://www.alphatab.net/
+
+https://www.musicxml.com/music-in-musicxml/
