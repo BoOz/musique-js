@@ -7,7 +7,7 @@
 </head>
 <body>
 	<section id="affichage">
-		<h1><span id="titre">Liste de lecture</span></h1>
+		<h1><span id="titre"></span></h1>
 		<div style="width:100%">
 			<div id="grille" style="text-align:left;">
 			</div>
@@ -20,7 +20,7 @@
 		<p>
 			<small id="afficher_degres"></small>
 		</p>
-		<span class="blink">Chargement... </span>
+		<span class="blink">... </span>
 	</section>
 	<section class="instruments"></section>
 	<script>
@@ -30,290 +30,44 @@
 	</script>
 	<script src="dist/jquery-3.3.1.min.js"></script>
 	<script src="dist/soundfont-player.js"></script>
+	
+	<script src="inclure/partition.js"></script>
 	<script src="inclure/gammes.js"></script>
-
+	
+	<script src="inclure/lecteurMidi.js"></script>
+	
 	<script src="instruments/vents.js"></script>
 	<script src="instruments/accompagnements.js"></script>
 	<script src="instruments/basses.js"></script>
 	<script src="instruments/percussions.js"></script>
-
-	<script src="listes_de_lecture/morceaux.js"></script>
-
-	<script>
-$(document).ready(function(){
-	// le temps de charger
-	setInterval(blink,1500);
 	
-	var id = setTimeout(function(){$(".blink").remove();},3000);
-	var start = 5 ;
+	<script src="listes_de_lecture/morceaux.js"></script>
+	
+	<script>
+	
+	$(document).ready(function(){
+	// play / pause
+	$("#affichage").before("<a href='/'>stop</a></small>");
+	$("#menu a").css({margin:"0 10px"});
+	});
 	
 	var objet = liste_de_lecture ;
 	var keys = Object.keys(objet) ;
 	var v = keys[ keys.length * Math.random() << 0] ;
-	//console.log(v, objet[v]["titre"], objet[v]["accompagnement"]);
+	var titre = objet[v] ;
 	
-	var id2 = setTimeout(function(){
-
-		// Edit here
-		document.getElementById("titre").innerHTML = objet[v]["titre"] ;
-		document.getElementById("grille").innerHTML = objet[v]["accompagnement"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
-		
-		var grille = objet[v]["accompagnement"]	.replace(/(?:\r\n|\r|\n|\t)/g, ' ')
-												.replace(/\s/g, ' ')
-		
-		
-		var mesures = grille.split("||");
-		
-		// console.log(grille, mesures);
-		
-		var parties = [] ;
-		var nb_parties = 0 ;
-		var nb_mesures = 0 ;
-		
-		var instruments = [] ;
-		
-		mesures.forEach(function(e,i) {
-			e = e.trim();
-			if(e){
-				// Grille ?
-				if(e.match(/\|/g)){
-					
-					e = e
-						.replace(/\| \|/g,"|")
-					;
-					
-					// console.log(i,e);
-					
-					// compter le nombre de mesures
-					// console.log(e.split("|").length);
-					nb_mesures = nb_mesures + e.split("|").length ;
-					nb_parties ++ ;
-					e = e
-						.replace(/\| \|/g,"|")
-						.replace(/ *: */g,"")
-						;
-					
-					
-					var a = [] ;
-					var accords = e.split("|") ;
-					accords.forEach(function(e,i) {
-						e = e.trim();
-						detail = e.match(/([A-Gb#]+)(.*)/);
-						//console.log(detail[1],detail[2]);
-						a.push([detail[1],detail[2]]);
-					});
-					parties.push(a) ;
-				}else{
-				// Metas ?
-					// console.log(i,e);
-					
-					// intercepter les delais + / -
-					var delai = 0 ;
-					var res = e.match(/\++/gi) ;
-					if(res){
-						// nombre de quart de temps de delais + ou -
-						delai = res[0].length * duree_temps / cadence
-						
-						e = e.replace(/\++/gi, "").trim();
-						console.log(">" + e + "<", res, delai);
-					}
-					
-					switch(e) {
-						case "Piano":
-							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
-							instruments.push([instrument,delai]);
-							break;
-						case "Choirs":
-							instrument = accompagnements[ accompagnements.length * Math.random() << 0]
-							instruments.push([instrument,delai]);
-							break;
-						case "Basse":
-							instrument = basses[ basses.length * Math.random() << 0]
-							instruments.push([instrument,delai]);
-							break;
-						case "Batterie":
-							instruments.push(["percussion",delai]);
-							break;
-						case "4/4":
-							cadence = 4 ;
-							break;
-					} 
-					
-					if(parseInt(e)){
-						//console.log("yeah ",parseInt(e) );
-						tempo = e ;
-						duree_temps = 60 / tempo ;
-					}
-				}
-			}
-		});
-
-		console.log(nb_parties + " parties, " + nb_mesures + " mesures.", cadence, instruments.length + " instruments - tempo = " + tempo);
-		
-		document.getElementById("mesures").innerHTML = "/" + nb_mesures ;
-		document.getElementById("afficher_mesure").innerHTML = "0" ;
-		
-		// console.log(parties);
-		// que joue l'instrument dans chaque partie
-		var morceau = [] ;
-		var notes = [] ;
-		var accords = [] ;
-		
-		parties.forEach(function(e,i) {
-			// console.log(i,e);
-			var partie = "Partie " + (i+1) ;
-			morceau[partie] = [];
-			morceau[partie]["Notes"] = [] ;
-			morceau[partie]["Accords"] = [] ;
-			e.forEach(function(n,i) {
-				morceau[partie]["Notes"].push(n[0]) ;
-				notes.push(n[0]) ;
-				accords.push([n[0],n[1]])
-				morceau[partie]["Accords"].push(n[0] + n[1]) ;
-			});
-		});
-		
-		// console.log(morceau);
-		
-		console.log(notes);
-		
-		// Jouer la partition
-		var start = 5 ;
-		var time = start ; // délais de chargement
-		var nb_temps = nb_mesures * cadence ;
-		var ac = new AudioContext() ;
-		var options = {} ;
-		
-		instruments.forEach(function(e,i) {
-			
-			if(e[0] == "percussion"){
-				options = { gain:0.8 , soundfont: 'FluidR3_GM' , delay:e[1]}
-			}
-			
-			Soundfont.instrument(ac, e[0], options).then(function (inst) {
-				
-				console.log("inst :> " + e[0] + " - delai : " + e[1] + " - ac.currrentTime : " + ac.currentTime);
-				time = start ;
-				delai = e[1] ;
-				// swicth par type d'instruments (percussion, basse, accompagnement)
-				var index_note = 0 ;
-				
-				for (t=1; t <= nb_temps; t++){
-					
-					var temps_relatif = t%cadence ;
-					
-					var note = notes[index_note]
-					// Temps fort sur le 1
-					var note_gain = 0.5 ;
-					if(temps_relatif == 1)
-						note_gain = 0.8 ;
-					
-					// "Accompagnement"
-					if(e[0].match(/.*(piano|choir|phone|string|organ|brass).*/i)){
-						//console.log("accords yeah", accords[index_note]);
-						
-						// console.log(t,index_note,accords[index_note]);
-						//1 0 Array [ "D", "m7" ]
-						
-						var accord = notes_accord(accords[index_note][1],accords[index_note][0],0);
-						//console.log(accord);
-						
-						accord.forEach(function(e,i) {
-							inst.play(e,time + delai, {duration: 0.8 * duree_temps, gain:note_gain});
-						});
-					}
-					
-					// "Basse"
-					if(e[0].match(/.*bass.*/i)){
-						//console.log(notes + " " + index_note + " (" + notes[index_note] + ") >> " + temps_relatif);
-						
-						if(t%2 == 1) // octave 2
-							inst.play(notes[index_note] + "2",time + delai, {duration: 2 * duree_temps, gain:note_gain});
-					}
-					
-					// "Percu"
-					if(e[0].match('percu')){
-						console.log("percu");
-						// 49 	Crash Cymbal 1
-						inst.play(35,time , {duration: duree_temps});
-						if(t%2 == 0)
-							inst.play(40,time, {duration: duree_temps});
-					}
-					
-					//console.log(e[0] + "temps : " + temps_relatif + " /" + index_note + "/ ("+ t +")")
-					time += duree_temps ;
-					
-					// fragile, si pas 4 temps
-					if(temps_relatif == 0)
-						index_note += 1 ;
-					
-					// 
-				}
-				
-				//  fin du morceau
-				if(i == 0){ // une seule fois
-					setTimeout(function(){ window.location.reload(true); }, time*1000);
-					console.log("Fin", time,i);
-				}
-			});
-		});
-		
-		
-		// fin edit
-	},3000);
+	var morceau = lirePartition(titre.accompagnement);
+	console.log(morceau);
 	
-});
-
-function notes_accord(type,fondamentale,renversement){
-
-	var midiNote = note2midi[fondamentale];
-	var accord = [] ;
-	var distance_a_do = 0 ; // C4 = 60 ;
-	// console.log(type, accords, accords[type]);
-	console.log("Jouer " + fondamentale + type + " (" + midiNote + ")", accords[type]);
+	document.getElementById("titre").innerHTML = titre.titre ;
+	document.getElementById("grille").innerHTML = morceau["grille"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
 	
-	var total = 0;
-	accords[type].forEach(function(e,i) {
-		total += midiNote + e ;
-		accord.push(midiNote + e);
-	});
+	var ac = lecteurMidi(morceau) ;
 	
-	var avg = total / accord.length;
-	distance_a_do = avg - 60;
-	var dist = 0 ;
-	console.log("moyenne renversement 0 : " + distance_a_do);
-	console.log(accord);
+	setTimeout(function(){ window.location.reload(); }, (morceau.duree + 10) * 1000);
+
+	//console.log(ac);
 	
-	// tester l aproximite a do4 de 10 renversements
-	var renversement = [] ;
-	for(i=0;i<2;i++){
-		renversement = renversement_accord(accord,true);
-		renversement[0] = renversement[0] - 12 ;
-		
-		var total = 0;
-		renversement.forEach(function(e,i) {
-			total += e ;
-		});
-		
-		avg = total / accord.length;
-		dist = Math.abs(avg - 60) ;
-		if(distance_a_do > dist){
-			distance_a_do = dist ;
-			console.log("moyenne renversement : i " + distance_a_do);
-			accord = renversement ;
-			console.log(renversement);
-		}
-	}
-	return accord ;
-}
-
-function blink(){
-	$(".blink").animate({opacity:0},200,"linear",function(){
-		$(this).animate({opacity:1},200);
-		document.getElementById("grille").innerHTML = "..." .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
-	});
-}
-
 	</script>
 	
 </body>

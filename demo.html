@@ -25,12 +25,13 @@
   <section class="instruments"></section>
   <script src="dist/soundfont-player.js"></script>
   <script>
+  
     var ctx = new AudioContext();
     var soundfont = new Soundfont(ctx);
     var inst = soundfont.instrument();
 
     var notesField = document.getElementById("notes");
-    notesField.value = "C4 C#4 D4 D#4 E4 F4 F#4 G4 G#4 A4 A#4 B4 C5 B4 Bb4 A4 Ab4 G4 Gb4 F4 E4 Eb4 D4 Db4 C4";
+    notesField.value = "C4 D4 E4 F4 F#4 G4";
 
     var btn = document.querySelector("button[action=play]");
     btn.setAttribute("disabled", true);
@@ -102,5 +103,13 @@
 
   </script>
 
+<script src="dist/jquery-3.3.1.min.js"></script>
+<script>
+$(document).ready(function(){
+	// play / pause
+	$("section").eq(0).before("<small id='menu'><a href='/'>retour</a>|<a href='/melodie_aleatoire.html'>mélodie aléatoire</a>|<a href='/liste_de_lecture.html'>liste de lecture</a></small>");
+	$("#menu a").css({margin:"0 10px"});
+});
+</script>
 </body>
 </html>

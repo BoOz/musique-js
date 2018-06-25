@@ -22,9 +22,14 @@ var note2midi = {
 	}
 
 var accords = {
-	"7": [0,4,7,9],
+	"7": [0,4,7,10],
 	"maj7": [0,4,7,11],
-	"m7": [0,3,7,9],
+	"m7": [0,3,7,10],
+	"m": [0,3,7],
+	"9": [0,3,7,10,12],
+	"sus": [0,6,10],
+	"6": [0,4,7,9],
+	"m6": [0,3,7,9],
 }
 
 function renversement_accord(accord,reverse){
@@ -44,6 +49,21 @@ function gamme(tonic,scale){
 	}
 	return g;
 }
+
+// division du temps
+
+var rythmes = {
+	"quadruple_croche": 1/12,
+	"triple_croche": 1/6,
+	"double_croche": 1/4,
+	"croche": 1/2,
+	"noire": 1,
+	"noire pointée": 1 + 1/2 ,
+	"blanche": 2,
+	"blanche pointée": 3,
+	"ronde": 4,
+}
+
 
 function melodie(gamme, nb_temps){
 	// durée possibles, double croche (0.25), croche (0.5), noire (1), blanche (2), (ronde (4)).
@@ -69,7 +89,51 @@ function melodie(gamme, nb_temps){
 	return m ;
 }
 
-function notes_accord(gamme,degre){
+function notes_accord(type,fondamentale,renversement){
+
+	var midiNote = note2midi[fondamentale];
+	var accord = [] ;
+	var distance_a_do = 0 ; // C4 = 60 ;
+	console.log(type);
+	// console.log("Jouer " + fondamentale + type + " (" + midiNote + ")", accords[type]);
+	
+	var total = 0;
+	accords[type].forEach(function(e,i) {
+		total += midiNote + e ;
+		accord.push(midiNote + e);
+	});
+	
+	var avg = total / accord.length;
+	distance_a_do = avg - 60;
+	var dist = 0 ;
+	//console.log("moyenne renversement 0 : " + distance_a_do);
+	//console.log(accord);
+	
+	// tester l aproximite a do4 de 10 renversements
+	var renversement = [] ;
+	for(i=0;i<2;i++){
+		renversement = renversement_accord(accord,true);
+		renversement[0] = renversement[0] - 12 ;
+		
+		var total = 0;
+		renversement.forEach(function(e,i) {
+			total += e ;
+		});
+		
+		avg = total / accord.length;
+		dist = Math.abs(avg - 65) ;
+		if(distance_a_do > dist){
+			distance_a_do = dist ;
+			//console.log("moyenne renversement : i " + distance_a_do);
+			accord = renversement ;
+			//console.log(renversement);
+		}
+	}
+	return accord ;
+}
+
+// page melodie aleatoire
+function notes_accords_gamme(gamme,degre){
 	var a = [] ;
 	if(degre=="I")
 		a = [gamme[1] -12, gamme[3]-12, gamme[5]-12,gamme[7]-24] ;
@@ -80,7 +144,31 @@ function notes_accord(gamme,degre){
 	return a ;
 }
 
-function notes_basse(gamme,degre){
+function notes_basse(fondamentale, type_accord, temps){
+	var noteMidi = note2midi[fondamentale] - 24 ;
+	
+	if(noteMidi > 47)
+		noteMidi -= 12 ;
+	
+	if(noteMidi < 24)
+		noteMidi += 12 ;
+	
+	if(temps%2 == 1)
+		return noteMidi ;
+	
+	if(temps%2 == 0){
+		var intervalle = 0 ;
+		if(accords[type_accord][3])
+			intervalle = accords[type_accord][3] ;
+		
+		var septieme = noteMidi + intervalle ;
+		
+		return septieme ;
+	}
+}
+
+// melodie aleatoire
+function notes_basse_gamme(gamme,degre){
 	var a = [] ;
 	if(degre=="I")
 		a = [gamme[1]-24] ;
