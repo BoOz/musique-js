@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Musique en MIDI, partition aléatoire en javascript.</title>
+	<link rel="stylesheet" type="text/css" href="interface/musique-js.css">
+</head>
+<body>
+	<section id="affichage">
+		<h1><span id="titre"></span></h1>
+		<p>
+			<small>Mélodie :</small> <i><small id="lead"></small></i>
+			<br>
+			<small> Accompagnement :</small> <i><small id="accompagnement"></small></i>
+			<br>
+			<small> Basse :</small> <i><small id="basse"></small></i>
+		</p>
+		<p>
+			<small id="afficher_temps">0</small><small id="afficher_mesure"></small>
+			<small id="mesures"></small>
+		</p>
+		<p>
+			<small id="afficher_degres"></small>
+		</p>
+		<span class="blink">Chargement... </span>
+	</section>
+	<section class="instruments"></section>
+	<script>
+	// AudioContext support
+	var AudioContext = window.AudioContext // Default
+	|| window.webkitAudioContext // Safari and old versions of Chrome
+	</script>
+	<script src="dist/jquery-3.3.1.min.js"></script>
+	<script src="dist/soundfont-player.js"></script>
+	<script src="inclure/gammes.js"></script>
+	<script src="instruments/vents.js"></script>
+	<script src="instruments/accompagnements.js"></script>
+	<script src="instruments/basses.js"></script>
+	<script src="instruments/percussions.js"></script>
+
+	<script>
+	
+	// Mélodie aléatoire sur 32 mesures, avec accompagnement II V I
+	
+$(document).ready(function(){
+
+	// play / pause
+	$("#affichage").before("<small id='menu'><a href='/'>stop</a></small>");
+	$("#menu a").css({margin:"0 10px"});
+	
+	
+	// le temps de charger
+	setInterval(blink,2000);
+	setTimeout(function(){$(".blink").remove();},5000);
+	var start = 5 ;
+	
+	var keys = Object.keys(note2midi) ;
+	var tonalite = keys[ keys.length * Math.random() << 0] ;
+	
+	console.log(note2midi, note2midi[tonalite]);
+	
+	var g = gamme(note2midi[tonalite],"major"); // Fa
+	var nb_temps = 32 ;
+	
+	document.getElementById("titre").innerHTML = "Mélodie aléatoire en " + tonalite + " majeur" ;
+	document.getElementById("mesures").innerHTML = " / "  + nb_temps ;
+	
+	var m = melodie(g, nb_temps);
+	//console.log(m);
+	
+	// Theme 
+	var ac = new AudioContext() ;
+	
+	// un instrument au hasard
+	instrument = vents[ vents.length * Math.random() << 0]
+	console.log(instrument);
+	document.getElementById("lead").innerHTML = instrument ;
+	
+	// console.log(g);
+	
+	var time = start ;
+	
+	// charger un instrument (mode emboité)
+	Soundfont.instrument(ac, instrument).then(function (inst) {
+		
+		console.log("melody : " + instrument + ", ac.currrentTime : " + ac.currentTime);
+		
+		// jouer la melodie
+		for (i=0; i < m.length; i++){
+			
+			// Temps fort sur le 1
+			var note_gain = 0.9 ;
+			if(i%4 == 1)
+				note_gain = 1 ;
+			
+			inst.play(m[i].note, time, {duration: m[i].duree, gain:note_gain});
+			time = time + m[i].duree ;
+		}
+		
+		// accompagnement
+		time = start ;
+		instrument = accompagnements[ accompagnements.length * Math.random() << 0]
+		
+		// un peu derrière le temps
+		Soundfont.instrument(ac, instrument, {attack:0.1}).then(function (accompagnement) {
+			
+			console.log("accompagnement : " + instrument + ", ac.currrentTime : " + ac.currentTime);
+			document.getElementById("accompagnement").innerHTML = instrument ;
+			
+			var contretemps = 0  ; // 0-1
+			
+			// jouer un note pour chaque temps 
+			for (i=1; i <= nb_temps; i++){
+				
+				degre = "I" ;
+				if(i%8 >= 1 && i%16 >=9)
+					degre = "II" ;
+				if(i%8 >= 3 && i%16 >=11)
+					degre = "V" ;
+				if(i%8 >= 5 && i%16 >=13)
+					degre = "I" ;
+				
+				if(i > 15)
+					contretemps = 0.5 ;
+				
+				var accord = notes_accords_gamme(g,degre);
+				
+				// Temps fort sur le 1
+				var note_gain = 0.6 ;
+				if(i%4 == 1)
+					note_gain = 0.8 ;
+				
+				if(i <= 15) {
+					if(i%2 == 1) {
+						accord.forEach(function(e) {
+							accompagnement.play(e,time + contretemps , {duration: 2 * 1, gain:note_gain});
+						});
+					}
+				}
+				
+				if(i > 15) {
+					accord.forEach(function(e) {
+						accompagnement.play(e,time + contretemps , {duration: 1, gain:note_gain});
+					});
+				}
+				
+				time += 1 ;
+			}
+			
+			// Basse
+			time = start ;
+			instrument = basses[ basses.length * Math.random() << 0]
+			
+			// Sur le temps
+			Soundfont.instrument(ac, instrument, {}).then(function (basse){
+				
+				console.log("Basse : " + instrument + ", ac.currrentTime : " + ac.currentTime);
+				document.getElementById("basse").innerHTML = instrument ;
+				
+				// jouer 
+				for (i=1; i <= nb_temps; i++){
+					
+					degre = "I" ;
+					if(i%8 >= 1 && i%16 >=9)
+						degre = "II" ;
+					if(i%8 >= 3 && i%16 >=11)
+						degre = "V" ;
+					if(i%8 >= 5 && i%16 >=13)
+						degre = "I" ;
+					
+					var accord = notes_basse_gamme(g,degre);
+					
+					// Temps fort sur le 1
+					var note_gain = 1 ;
+					if(i%4 == 1)
+						note_gain = 1.2 ;
+					
+					// blanches au début 
+					if(i <= 15) {
+						if(i%2 == 1) {
+							accord.forEach(function(e) {
+								basse.play(e,time, {duration: 2 * 1, gain:note_gain});
+							});
+						}
+					}
+					
+					// noires ensuite
+					if(i > 15) {
+						accord.forEach(function(e) {
+							basse.play(e,time, {duration: 1, gain:note_gain});
+						});
+					}
+
+					time += 1 ;
+				}
+				
+				// Percus
+				// Dernier instru + commandes
+				time = start ;
+				instrument = "percussion";
+				
+				// Sur le temps
+				Soundfont.instrument(ac, instrument, { gain:0.8 , soundfont: 'FluidR3_GM' } ).then(function (percus){
+					
+					console.log("Percussions : " + instrument + ", ac.currrentTime : " + ac.currentTime);
+					
+					// jouer 
+					for (t=1; t <= nb_temps; t++){
+						
+						// fonction immédiatement invoquée pour compter les temps
+						(function(t,time,start) {
+							setTimeout(function(){
+								// console.log("temps : " + t + " time : " + time + " start : " + start);
+								$("#afficher_temps").html(t);
+							},(time - ac.currentTime) * 1000
+							);
+						})(t,time,start);
+						
+						degre = "I" ;
+						if(t%8 >= 1 && t%16 >=9)
+							degre = "II" ;
+						if(t%8 >= 3 && t%16 >=11)
+							degre = "V" ;
+						if(t%8 >= 5 && t%16 >=13)
+							degre = "I" ;
+						
+						
+						if(t > 15) {
+							var delay = 0.5 ;
+							// 49 	Crash Cymbal 1
+							percus.play(35,time , {duration: 1});
+							percus.play(40,time + delay , {duration: 1});
+						}
+						
+						time += 1 ;
+					}
+					
+					// commandes finales
+					console.log("temps à la fin : " + time + " dont " + start + " de délai de chargement soit "+ (time - start) +".");
+					
+					setTimeout(function(){ window.location.reload() ; }, time*1000);
+				})
+			})
+		})
+	})
+});
+
+function blink(){
+	$(".blink").animate({opacity:0},200,"linear",function(){
+		$(this).animate({opacity:1},200);
+	});
+}
+
+	</script>
+	
+</body>
+</html>
