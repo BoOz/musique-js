@@ -87,7 +87,7 @@ var liste_de_lecture = {
 ||	Gb9	|	C7	|	Fm	|	Fm	||
 ||:	Fm7	|	Bbm7	|	Eb7	|	Fm7	|	Fm7	|	Dbmaj7	|	C7	:||
 |	Fm7	|	Bbm7	|	Eb6	|	Abmaj7	|	Dbmaj7	|	Csus	|	Csus	|	Csus	|	C7	|
-|	Fm7	|	Fm7	|	Bbm7	|	Bbm7	|	Fm7	|	Fm7	|	Bbm7 |	Eb7	|	Abmaj7	|	Dbmaj7	|	Dbmaj7	|	Dbmaj7	| G7 | C7	| C7 |
+|	Fm7	|	Fm7	|	Bbm7	|	Bbm7	|	Fm7	|	Fm7	|	Bbm7 |	Eb7	|	Abmaj7	|	Dbmaj7	|	Dbmaj7	|	Dbmaj7	|	Dbmaj7	|	G7	| C7 |
 | Fm7 | Fm7 :||
 `},
 
