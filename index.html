@@ -1,56 +1,94 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-	<meta charset="UTF-8">
-	<title>Musique en MIDI, partition au format texte.</title>
-	<link rel="stylesheet" type="text/css" href="interface/musique-js.css">
-</head>
-<body>
-	<section id="affichage">
-		<h1><span id="titre"></span></h1>
-		<p>
-			<span class="blink">Chargement... </span>
-		</p>
-	</section>
-	<section class="instruments"></section>
-	<script>
-	// AudioContext support
-	var AudioContext = window.AudioContext // Default
-	|| window.webkitAudioContext // Safari and old versions of Chrome
-	</script>
-	<script src="dist/jquery-3.3.1.min.js"></script>
-	<script src="dist/soundfont-player.js"></script>
-	<script src="inclure/gammes.js"></script>
-	<script src="instruments/vents.js"></script>
-	<script src="instruments/accompagnements.js"></script>
-	<script src="instruments/basses.js"></script>
-	<script src="instruments/percussions.js"></script>
-
-	<script>
-	
-	// Accueil
-	
-$(document).ready(function(){
-	
-	// Charger X secondes
-	var tempsChargement = 5 ;
-	
-	setInterval(blink,2000);
-	setTimeout(function(){$(".blink").remove();}, tempsChargement * 1000);
-	
-	// play / pause
-	$("#affichage").before("<small id='menu'><a href='./melodie_aleatoire.html'>mélodie aléatoire</a>|<a href='./liste_de_lecture.html'>liste de lecture</a>|<a href='./demo.html'>tester les instruments</a></small>");
-	$("#menu a").css({margin:"0 10px"});
-	
-});
-
-function blink(){
-	$(".blink").animate({opacity:0},200,"linear",function(){
-		$(this).animate({opacity:1},200);
-	});
-}
-
-	</script>
-	
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<title>Musique en MIDI, partition au format texte.</title>
+		<link rel="stylesheet" type="text/css" href="interface/musique-js.css">
+	</head>
+	<body>
+		<section id="affichage">
+			<h1><span id="titre"></span></h1>
+			<div style="width:100%">
+				<div id="grille" style="text-align:left;">
+				</div>
+			</div>
+			<p>
+			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
+			<small id="mesures"></small>
+			</p>
+		</section>
+		<section class="instruments"></section>
+		<script>
+		// AudioContext support
+		var AudioContext = window.AudioContext // Default
+		|| window.webkitAudioContext // Safari and old versions of Chrome
+		</script>
+		<script src="dist/jquery-3.3.1.min.js"></script>
+		<script src="dist/soundfont-player.js"></script>
+		
+		<script src="instruments/vents.js"></script>
+		<script src="instruments/accompagnements.js"></script>
+		<script src="instruments/basses.js"></script>
+		
+		<script src="inclure/gammes.js"></script>
+		
+		<script src="inclure/partition.js"></script>
+		<script src="inclure/lecteurMIDI.js"></script>
+		
+		<script src="listes_de_lecture/morceaux.js"></script>
+		
+		<script>
+		// Accueil
+			
+		$(document).ready(function(){
+			
+			// play / pause
+			$("#affichage").before("<small id='menu'>Menu : <a href='./melodie_aleatoire.html'>mélodie aléatoire</a>|<a href='./liste_de_lecture.html'>liste de lecture</a>|<a href='./demo.html'>tester les instruments</a></small><small id='liste_de_lecture'>Morceaux : </small>");
+			
+			var objet = liste_de_lecture ;
+			Object.keys(objet).forEach(function(o){
+				$("#liste_de_lecture").append("<a href='' data-id='"+ o +"'>"+ objet[o] . titre +"</a> | " );
+			});
+			
+			$("#liste_de_lecture").after("<small><a href='/'>stop</a></small>" );
+			$("#menu a, #liste_de_lecture a").css({margin:"0 10px"});
+			
+			$("#liste_de_lecture a").click(function(e){
+				var id = $(this).attr("data-id");
+				if(liste_de_lecture[id])
+					charger_morceau(id);
+				return false ;
+			});
+			
+		});
+		
+		function charger_morceau(id){
+			
+			// Charger X secondes
+			var tempsChargement = 5 ;
+			$(".blink_container").html('<span class="blink">Chargement... </span>');
+			setInterval(blink,2000);
+			setTimeout(function(){$(".blink").remove();}, tempsChargement * 1000);
+			
+			var titre = liste_de_lecture[id] ;
+			
+			var morceau = lirePartition(titre.accompagnement);
+			lecteurMidi(morceau);
+			
+			document.getElementById("titre").innerHTML = titre.titre ;
+document.getElementById("grille").innerHTML = morceau["grille"] .replace(/</g,"&lt;").replace(/>/g,"&gt;") .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
+			
+			document.getElementById("mesures").innerHTML = " / "  + morceau["nb_mesures"] * morceau["cadence"] ;
+			document.getElementById("afficher_temps").innerHTML = "0" ;
+			
+		}
+		
+		function blink(){
+			$(".blink").animate({opacity:0},200,"linear",function(){
+				$(this).animate({opacity:1},200);
+			});
+		}
+		
+		</script>
+	</body>
 </html>

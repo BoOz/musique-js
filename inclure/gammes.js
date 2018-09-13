@@ -22,22 +22,20 @@ var note2midi = {
 	}
 
 var accords = {
+	"M": [0,4,7],
 	"7": [0,4,7,10],
+	"9": [0,4,7,10,14],
+	"7#11": [0,4,7,10,18],
 	"maj7": [0,4,7,11],
-	"m7": [0,3,7,10],
-	"m": [0,3,7],
-	"9": [0,3,7,10,12],
-	"sus": [0,6,10],
+	"7M": [0,4,7,11],
+	"sus4": [0,5,7],
+	"sus": [0,5,7],
+	"7sus": [0,5,7,10],
 	"6": [0,4,7,9],
+	"m": [0,3,7],
+	"m7": [0,3,7,10],
 	"m6": [0,3,7,9],
-}
-
-function renversement_accord(accord,reverse){
-  if(reverse)
-    accord.unshift(accord.pop())
-  else
-    accord.push(accord.shift())
-  return accord
+	"m7b5": [0,3,6,9],
 }
 
 function gamme(tonic,scale){
@@ -89,15 +87,72 @@ function melodie(gamme, nb_temps){
 	return m ;
 }
 
-function notes_accord(type,fondamentale,renversement){
+/*
+Melodie automatique sur des accords
 
-	var midiNote = note2midi[fondamentale];
+	lesAccords.forEach(function(e){
+		
+		// console.log(e);
+		
+		var fondamentale = e[1] ;
+		var type = e[2] ;
+		var duree = e[3] ;
+		
+		if(type.match(/^(m7|m)$/)){
+			console.log(type);
+			var type_gamme = "minor" ;
+		}else
+			var type_gamme = "major" ;
+		
+		var g = gamme(note2midi[fondamentale],type_gamme);
+		
+		var notes = melodie(g, duree);
+		
+		console.log(notes);
+		
+		notes.forEach(function(n){
+			inst.play(n.note , time , { duration: n.duree * duree_temps});
+			time += n.duree * duree_temps ;
+		});
+		
+	});
+
+*/
+
+
+function renversement_accord(a,reverse){
+//console.log("recu",accord);
+
+  if(reverse){
+    a.unshift(a.pop()); // mettre au debut le dernier element un octave en dessous
+    a[0] = a[0] - 12 ;
+  }
+  else{
+    a.push(a.shift()); // mettre à la fin le premier element un octave au dessus
+    a[0] = a[0] + 12 ;
+  }
+//console.log("renvoyé",accord);
+
+  return a ;
+}
+
+function notes_accord(type,fondamentale,renversement){
+	
+	if(typeof(fondamentale) != "number")
+		var midiNote = note2midi[fondamentale];
+	else
+		var midiNote = fondamentale ;
+	
 	var accord = [] ;
 	var distance_a_do = 0 ; // C4 = 60 ;
-	console.log(type);
+	
+	// console.log(type);
 	// console.log("Jouer " + fondamentale + type + " (" + midiNote + ")", accords[type]);
+	if(type == "") type = "M" ;
+	if(typeof(accords[type]) == "undefined") console.log("Type d'accord inconnu (" + fondamentale + ")" + type, accords[type]);
 	
 	var total = 0;
+	
 	accords[type].forEach(function(e,i) {
 		total += midiNote + e ;
 		accord.push(midiNote + e);
@@ -106,29 +161,36 @@ function notes_accord(type,fondamentale,renversement){
 	var avg = total / accord.length;
 	distance_a_do = avg - 60;
 	var dist = 0 ;
-	//console.log("moyenne renversement 0 : " + distance_a_do);
-	//console.log(accord);
 	
-	// tester l aproximite a do4 de 10 renversements
+	// console.log("moyenne renversement 0 de " + accord + " : " + distance_a_do + " ("+ avg +")");
+	
+	// tester la proximite a do4 de 5 renversements
+	
 	var renversement = [] ;
-	for(i=0;i<2;i++){
-		renversement = renversement_accord(accord,true);
-		renversement[0] = renversement[0] - 12 ;
+	var ta = accord.slice() ; // creer un copie
+	
+	for(i=0;i<5;i++){
+		renversement = renversement_accord(ta,true);
 		
-		var total = 0;
+		// console.log(accord,ta);
+		
+		total = 0;
 		renversement.forEach(function(e,i) {
 			total += e ;
 		});
 		
 		avg = total / accord.length;
-		dist = Math.abs(avg - 65) ;
+		dist = Math.abs(avg - 60) ;
+		
+		// console.log("moyenne renversement : " + (i+1) + " : " + avg, distance_a_do , dist);
+		
 		if(distance_a_do > dist){
 			distance_a_do = dist ;
-			//console.log("moyenne renversement : i " + distance_a_do);
-			accord = renversement ;
-			//console.log(renversement);
+			//console.log("moyenne renversement : " + (i+1) + " : " + distance_a_do);
+			accord = renversement.slice() ;
 		}
 	}
+	//console.log("accord final : " + accord + " avec une distance de " + distance_a_do + " ("+ avg +")", ta);
 	return accord ;
 }
 
@@ -191,7 +253,7 @@ var scales = {
 	//'locrian':			[0,1,3,5,6,8,10,12],
 
 	//'natural minor':	[0,2,3,5,7,8,10,12],
-	//'minor':			[0,2,3,5,7,8,10,12],
+	'minor':			[0,2,3,5,7,8,10,12],
 	//'melodic minor':	[0,2,3,5,7,9,11,12],
 	'harmonic minor':	[0,2,3,5,7,8,11,12],
 

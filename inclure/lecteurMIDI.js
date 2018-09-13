@@ -1,122 +1,160 @@
 function lecteurMidi(morceau){
+	
+	var ac = new AudioContext() ;
+	var time = ac.currentTime + 3 ; // le temps de tout charger
+	var start = time ;
+	
+	var duree_temps = 60/morceau.tempo ;
+	
+	console.log(morceau);
+	
+	// compter le temps
+	// console.log("duree",morceau.duree);
+	// console.log("duree d'un temps",duree_temps);
+	
+	// fonction avec une closure pour conserver le counter.
+	// mais aussi invoquée immédiatement (function{})() pour que ca marche...
+	// https://www.w3schools.com/js/js_function_closures.asp
+	var add_temps = (function () {
+		var counter = 0 ;
+		return function () {
+			counter += 1;
+			document.getElementById("afficher_temps").innerHTML = counter ;
+			return counter
+		}
+	})();
+	
+	// le tout dans un setInterval décalé par setTimeout.
+	setTimeout(function(){
+		var compteur_du_temps = setInterval(add_temps,duree_temps * 1000);
+		setTimeout(function(){clearInterval(compteur_du_temps)}, morceau.duree * 1000);
+	}, (start - duree_temps) * 1000);
+	
+	// concatener les parties
+	var laMelodie = [] ;
+	var lesAccords = [] ;
+	morceau.parties.forEach(function(p){
+		laMelodie = laMelodie.concat(p.melodie);
+		lesAccords = lesAccords.concat(p.accords) ;
+	});
+	
+	
+	// console.log(laMelodie,lesAccords);
+	
+	/* Melodie */
+	if(laMelodie.length > 0){
 		
-		var instruments = morceau.instruments ;
-		var parties = morceau.parties ;
-		var nb_mesures = morceau.nb_mesures;
-		var cadence = morceau.cadence;
-		var tempo = morceau.tempo ;
-		var grille = morceau.grille ;
+		var lead = morceau.instruments[0];
+		var delai = 0 ;
+		var nom = lead[0];
+		// console.log(nom);
+		delai = lead[1];
 		
-		// console.log(instruments,parties,nb_mesures,cadence,tempo);
-		
-		// Jouer la partition
-		var start = 5 ;
-		var time = start ; // délai de chargement
-		var nb_temps = nb_mesures * cadence ;
-		var ac = new AudioContext() ;
-		var options = {} ;
-		var accords = [] ;
-		var duree_temps = 60/tempo ;
-		
-		// parcourir toutes les parties du morceaux et trouver les notes à jouer
-		parties.forEach(function(e){
-			//console.log(e.accords);
-			accords = accords.concat(e.accords);
-		});
-		
-		//console.log(accords);
-		
-		instruments.forEach(function(e,i) {
+		var options = { nameToUrl: localUrl}
+		Soundfont.instrument(ac, nom, options ).then(function (melodie) {
+			time = start ;
 			
-			var note = '' ;
-			var noteMidi = 0 ;
-			var rythme = '' ;
+			var notes = laMelodie ;
 			
-			var options = { nameToUrl: localUrl}
-			if(e[0] == "percussion"){
-				options = { nameToUrl: localUrl, gain:0.8 , delay:e[1]}
-			}
+			// console.log(laMelodie);
 			
-			Soundfont.instrument(ac, e[0], options).then(function (inst) {
+			notes.forEach(function(e){
 				
-				//console.log("inst :> " + e[0] + " - delai : " + e[1] + " - ac.currrentTime : " + ac.currentTime);
-				//console.log('Loaded notes: ', Object.keys(inst.buffers))
+				var note = e[0] ;
+				var duree = e[1] ;
 				
-				time = start ;
-				delai = e[1] ;
-				// swicth par type d'instruments (percussion, basse, accompagnement)
-				var index_note = 0 ;
-				
-				for (t=1; t <= nb_temps; t++){
-					
-					var temps_relatif = t%cadence ;
-					
-					note = accords[index_note][1];
-					noteMidi = note2midi[note];
-					
-					var fondamentale_accord = note ;
-					var type_accord = accords[index_note][2] ;
-					
-					//console.log(t,note,noteMidi,fondamentale_accord,type_accord);
-					
-					// Temps fort sur le 1
-					var note_gain = 0.5 ;
-					if(temps_relatif == 1)
-						note_gain = 0.8 ;
-					
-
-					// "Accompagnement"
-					if(e[0].match(/.*(piano|choir|phone|string|organ|brass).*/i)){
-						
-						//console.log(type_accord,note);
-						var accord = notes_accord(type_accord,note,0);
-						
-						accord.forEach(function(e,i) {
-							inst.play(e,time + delai, {duration: 0.8 * duree_temps, gain:note_gain});
-						});
-					}
-
-					
-					// "Basse"
-					if(e[0].match(/.*bass.*/i)){
-						
-						// notes_basse(fondamentale, type_accord temps)
-						note = notes_basse(fondamentale_accord, type_accord,t) ;
-						
-						rythme = rythmes["noire"] ;
-						
-						inst.play(note, time + delai, {duration: rythme * duree_temps, gain:note_gain});
-					}
-					//console.log(e[0] + "temps : " + temps_relatif + " /" + index_note + "/ ("+ t +")")
-				// "Percu"
-					if(e[0].match('percu')){
-						// console.log("percu",t);
-						// 49 	Crash Cymbal 1
-						inst.play(35,time , {duration: duree_temps});
-						if(t%2 == 0){
-							inst.play(40,time, {duration: duree_temps});
-						}
-					}
-					
-					time += duree_temps ;
-					
-					// fragile, si pas 4 temps
-					if(temps_relatif == 0)
-						index_note += 1 ;
-				}
-				
-				//  fin du morceau
-				if(i == 0){ // une seule fois
-					// retour à l'accueil à l a fon du morceau
-					// setTimeout(function(){ window.location.href = "/"; }, time*1000);
-					console.log("Fin", time,i);
-				}
+				melodie.play(note , time + delai, { duration: duree * duree_temps});
+				time += duree * duree_temps ;
 			});
 		});
+	}
 	
-	// on est tot :
-	// console.log("Fin 2", time);
-	//console.log(ac);
+	morceau.instruments.forEach(function(instru){
+		//console.log(instru);
+		
+		var nom = instru[0];
+		var delai = instru[1];
+		
+		var options = { nameToUrl: localUrl }
+		
+		//console.log(nom,options);
+		
+		/* Percussions */
+		if(nom == "percussion"){
+			options = { nameToUrl: localUrl, gain:0.8 }
+			Soundfont.instrument(ac, nom, options ).then(function (percu) {
+				time = start ;
+				
+				for(i=0; i < morceau.nb_mesures * morceau.cadence; i++){
+					// console.log("percu",t);
+					// 49 	Crash Cymbal 1
+					percu.play(35,time , {duration: duree_temps});
+					
+					if(i%2 == 1){
+						percu.play(40,time + delai, {duration: duree_temps});
+					}
+					/**/
+					time = time + duree_temps ;
+				}
+			});
+		}
+		
+		/* Accords */
+		if(accompagnements.indexOf(nom) > 0){
+			Soundfont.instrument(ac, nom, options ).then(function (inst2) {
+				
+				// on reset le temps dans l'instru
+				time = start ;
+				
+				lesAccords.forEach(function(e){
+					
+					// console.log(e);
+					
+					var fondamentale = e[1] ;
+					var type = e[2] ;
+					var duree = e[3] ;
+					
+					var notes = notes_accord(type,fondamentale,true);
+					
+					//console.log(notes);
+					
+					notes.forEach(function(n){
+						inst2.play(n , time + delai , { duration: duree * duree_temps});
+					});
+					
+					time += duree * duree_temps ;
+				});
+				
+			});
+		}
+		
+		/* Basse */
+		if(nom.match(/bass/)){
+			Soundfont.instrument(ac, nom, options ).then(function (basse) {
+				
+				// on reset le temps dans l'instru
+				time = start ;
+				
+				lesAccords.forEach(function(e){
+					
+					// console.log(e);
+					
+					var fondamentale = e[1] ;
+					var type = e[2] ;
+					var duree = e[3] ;
+					
+					var note = notes_basse(fondamentale, type, 1);
+					
+					//console.log(notes);
+					
+					basse.play(note , time + delai , { duration: duree * duree_temps});
+					
+					time += duree * duree_temps ;
+				});
+			});
+		}
+		
+	});
 	
 	return true ;
 }

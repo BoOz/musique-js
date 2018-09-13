@@ -26,9 +26,8 @@
   <script src="dist/soundfont-player.js"></script>
   <script>
   
-    var ctx = new AudioContext();
-    var soundfont = new Soundfont(ctx);
-    var inst = soundfont.instrument();
+    var ac = new AudioContext();
+    var soundfont ;
 
     var notesField = document.getElementById("notes");
     notesField.value = "C4 D4 E4 F4 F#4 G4";
@@ -36,11 +35,13 @@
     var btn = document.querySelector("button[action=play]");
     btn.setAttribute("disabled", true);
     btn.addEventListener("click", function(e) {
-      var time = ctx.currentTime + 0.1;
-      notesField.value.split(" ").forEach(function(note) {
-        console.log("Scheduling...", note, time);
-        inst.play(note, time, 0.2);
-        time += 0.2;
+      Soundfont.instrument(ac, soundfont ).then(function (inst) {
+	      var time = ac.currentTime + 0.5;
+	      notesField.value.split(" ").forEach(function(note) {
+	        console.log("Scheduling...", note, time);
+	        inst.play(note, time, 0.5);
+	        time += 0.5;
+	      });
       });
     });
     
@@ -87,13 +88,11 @@
           var name = e.target.value;
           console.log("Loading " + name + "...");
           btn.setAttribute("disabled", true);
-          inst = soundfont.instrument(name);
+          inst = name;
+          soundfont = name ;
           console.log(inst);
-          inst.onready(function() {
-            console.log("Instrument " + name + " ready.");
-            btn.removeAttribute("disabled");
-            renewMIDIAccess()
-          });
+          btn.setAttribute("disabled", true);
+          btn.removeAttribute("disabled");
         });
         label.appendChild(radio);
         label.appendChild(document.createTextNode(instrumentName));

@@ -1,3 +1,15 @@
+#liste_de_lecture {
+	font-size:0.8em;
+	margin:auto;
+	width:20%;
+	text-align:left;
+	top:20%;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	position: relative; 
+	padding-left: 0.4em;
+	white-space:nowrap;
+}
+
 #affichage {
 	font-size:1.5em;
 	margin:auto;
@@ -9,8 +21,10 @@
 	font-family:Georgia, "Times New Roman", Times, serif;
 	margin-bottom:-30px;
 	position: relative; 
-	padding-left: 0.4em; 
+	padding-left: 0.4em;
+	white-space:nowrap;
 }
+
 #affichage p {
 	font-size:1.5em;
 }
