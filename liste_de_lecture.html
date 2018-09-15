@@ -12,9 +12,8 @@
 			<div id="grille" style="text-align:left;">
 			</div>
 		</div>
-		<p>
-			<small id="afficher_temps"></small>
-			<small id="afficher_mesure"></small>
+		<p id="metronome">
+			<small id="afficher_temps"></small><small id="afficher_mesure"></small>
 			<small id="mesures"></small>
 		</p>
 		<p>
@@ -62,8 +61,10 @@
 	document.getElementById("titre").innerHTML = titre.titre ;
 	document.getElementById("grille").innerHTML = morceau["grille"] .replace(/(?:\r\n|\r|\n)/g, '<br />') ;
 	
+	$("#affichage").append('<button action="play" style="display:none">Play</button>');
 	var ac = lecteurMidi(morceau) ;
-	
+	$("button[action='play']").trigger( "click" );
+
 	setTimeout(function(){ window.location.reload(); }, (morceau.duree + 10) * 1000);
 
 	//console.log(ac);
