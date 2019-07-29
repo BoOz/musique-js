@@ -55,10 +55,17 @@
 			
 			$("#menu a, #liste_de_lecture a").css({margin:"0 10px"});
 			
+			var hash = $(location).attr('hash').replace(/#/g,"");
+			if(hash){
+				if(liste_de_lecture[hash])
+					charger_morceau(hash);
+				return false ;
+			}
 			$("#liste_de_lecture a").click(function(e){
 				var id = $(this).attr("data-id");
 				if(liste_de_lecture[id])
 					charger_morceau(id);
+					$(location).attr('hash',"#" + id);
 				return false ;
 			});
 			
