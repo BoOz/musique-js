@@ -89,14 +89,15 @@ var liste_de_lecture = {
 		"accompagnement" : `
 || 4/4 ||
 || 120 ||
+|| Vent ||
+||: g>>> <e5 <d5 | c5>>> <e5 <f5 | g5>>> <e5 <f5 | <g5 <g5 <g5 <g5 <g5 <e5 <c5 <e5 |
+| d5>>> <d5 <e5 | <f5 <f5 <f5 <f5 f5 <e5 <d5 | <e5 <e5 <e5 <e5 e5 | <c5 <e5 <d5 <d5 <d5 <d5 <d5 <c5
+| <b <d5 c5>>> :||
 || Piano ||
 || Basse ||
 || Batterie ||
-|| g>>> <e <d | c>>> <e <f | g>>> <e <f | <g <g <g <g <g <e <c <e |
-| d>>> <d <e | <f <f <f <f f <e <d | <e <e <e <e e | <c <e <d <d <d <d <d <c
-| <b <d c>>> ||
-||:	G7	|	C6	|	C7	|C7	B7	Am7	Ab7|	G7	|
-|	G9 	|	C7 |	Dm7	G7	|	C6/9	:||
+||:	G7	|	C6/9	|	C9	|C7	B7	Am7	Ab7|	G7	|
+|	G9 	|	C7 |	Dm9	G13	|	C6/9	:||
 `},
 
 }

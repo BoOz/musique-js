@@ -1,41 +1,62 @@
-// C 	C# 	D 	D# 	E 	F 	F# 	G 	G# 	A 	A# 	B
-// 60 	61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	71
-
-var note2midi = {
-		"C": 60,
-		"C#": 61,
-		"Db": 61,
-		"D": 62,
-		"D#": 63,
-		"Eb": 63,
-		"E": 64,
-		"F": 65,
-		"F#": 66,
-		"Gb": 66,
-		"G": 67,
-		"G#": 68,
-		"Ab": 68,
-		"A": 69,
-		"A#": 70,
-		"Bb": 70,
-		"B": 71,
-	}
+//		C	C#	D	D#	E	F	F#	G	G#	A	A#	B
+//	-1	0	1	2	3	4	5	6	7	8	9	10	11
+//	4	60	61	62	63	64	65	66	67	68	69	70	71
+//	prévoir d'ajouter l'octave [0-9] ex C4
+function note2midi (note){
+		
+		var noteM = note.charAt(0).toUpperCase();
+		var reg = new RegExp(note.charAt(0), "u");
+		note = note.replace(reg,noteM);
+		// octave par défaut = 4
+		var octave = 4 ;
+		if(o = note.match(/[0-9]$/)){
+			octave = parseInt(o[0]);
+			reg = new RegExp(o[0], "u");
+			note = note.replace(reg,"");
+		}
+		
+		var notes = {
+			"C": 0,
+			"C#": 1,
+			"Db": 1,
+			"D": 2,
+			"D#": 3,
+			"Eb": 3,
+			"E": 4,
+			"F": 5,
+			"F#": 6,
+			"Gb": 6,
+			"G": 7,
+			"G#": 8,
+			"Ab": 8,
+			"A": 9,
+			"A#": 10,
+			"Bb": 10,
+			"B": 11,
+		}
+		
+		var midiNumber = notes[note] + 12 * (octave + 1) ;
+		
+	return midiNumber ;
+}
 
 var accords = {
 	"M": [0,4,7],
+	"6": [0,4,7,9],
+	"6/9": [0,4,7,9,14],
 	"7": [0,4,7,10],
-	"9": [0,4,7,10,14],
-	"7#11": [0,4,7,10,18],
 	"maj7": [0,4,7,11],
 	"7M": [0,4,7,11],
 	"sus4": [0,5,7],
 	"sus": [0,5,7],
 	"7sus": [0,5,7,10],
-	"6": [0,4,7,9],
-	"6/9": [0,4,7,9,14],
+	"7#11": [0,4,7,10,18],
+	"9": [0,4,7,10,14],
+	"13": [0,4,7,10,21],
 	"m": [0,3,7],
 	"m7": [0,3,7,10],
 	"m6": [0,3,7,9],
+	"m9": [0,3,7,10,14],
 	"m7b5": [0,3,6,9],
 }
 
@@ -105,7 +126,7 @@ Melodie automatique sur des accords
 		}else
 			var type_gamme = "major" ;
 		
-		var g = gamme(note2midi[fondamentale],type_gamme);
+		var g = gamme(note2midi(fondamentale),type_gamme);
 		
 		var notes = melodie(g, duree);
 		
@@ -140,7 +161,7 @@ function renversement_accord(a,reverse){
 function notes_accord(type,fondamentale,renversement){
 	
 	if(typeof(fondamentale) != "number")
-		var midiNote = note2midi[fondamentale];
+		var midiNote = note2midi(fondamentale);
 	else
 		var midiNote = fondamentale ;
 	
@@ -208,7 +229,7 @@ function notes_accords_gamme(gamme,degre){
 }
 
 function notes_basse(fondamentale, type_accord, temps){
-	var noteMidi = note2midi[fondamentale] - 24 ;
+	var noteMidi = note2midi(fondamentale) - 24 ;
 	
 	if(noteMidi > 47)
 		noteMidi -= 12 ;

@@ -54,12 +54,10 @@ $(document).ready(function(){
 	setTimeout(function(){$(".blink").remove();},5000);
 	var start = 5 ;
 	
-	var keys = Object.keys(note2midi) ;
+	var keys = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"] ;
 	var tonalite = keys[ keys.length * Math.random() << 0] ;
 	
-	console.log(note2midi, note2midi[tonalite]);
-	
-	var g = gamme(note2midi[tonalite],"major"); // Fa
+	var g = gamme(note2midi(tonalite),"major"); // Fa
 	var nb_temps = 32 ;
 	
 	document.getElementById("titre").innerHTML = "Mélodie aléatoire en " + tonalite + " majeur" ;

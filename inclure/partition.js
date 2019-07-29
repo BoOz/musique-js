@@ -160,7 +160,7 @@ function splitMeasures (repr, cadence) {
 			//console.log("mesure",i,e);
 			
 			var accords_lus = e.match(/([A-G](?:[b#])?)([^ ]*)/);
-			var melodie_lue = e.match(/(?:<*)?[a-g]{1}(?:[b#])?(?![1-9])(?:>*)?(?=\s)/g);
+			var melodie_lue = e.match(/(?:<*)?[a-g]{1}(?:[b#])?([1-9]*)(?:>*)?(?=\s)/g);
 			
 			if(accords_lus){
 				// splitter sur espaces si plusieurs accords
@@ -178,9 +178,10 @@ function splitMeasures (repr, cadence) {
 				//console.log("mel",e,melodie_lue);
 				
 				melodie_lue.forEach(function(note){
-					var d = note.match(/(<*)([a-g](?:[b#])?)(>*)/) ;
+					var d = note.match(/(<*)([a-g](?:[b#])?[0-9]*)(>*)/) ;
 					var note = d[2];
 					var duree = (d[3])? d[3] : (d[1])? d[1] : 1 ;
+					// console.log(note,duree);
 					
 					switch(duree) {
 						case ">>>>":
@@ -210,8 +211,9 @@ function splitMeasures (repr, cadence) {
 						default:
 							duree = 1 ;
 					}
-					//console.log(note,d);
-					melodie.push([note2midi[note[0].toUpperCase() + note.substring(1)],duree]);
+					// la note et son altération éventuelle
+					// console.log({"note":note,"duree":duree, "nombre_midi":note2midi(note)})
+					melodie.push([note2midi(note),duree]);
 				});
 			}
 		});
