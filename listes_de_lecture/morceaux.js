@@ -92,7 +92,7 @@ var liste_de_lecture = {
 || Piano ||
 || Basse ||
 || Batterie ||
-|| d d d <e <d | c>>> <e <f | g>>> <e <f | <g <g <g <g <g <e <c <e |
+|| g>>> <e <d | c>>> <e <f | g>>> <e <f | <g <g <g <g <g <e <c <e |
 | d>>> <d <e | <f <f <f <f f <e <d | <e <e <e <e e | <c <e <d <d <d <d <d <c
 | <b <d c>>> ||
 ||:	G7	|	C6	|	C7	|C7	B7	Am7	Ab7|	G7	|
