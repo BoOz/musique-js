@@ -128,7 +128,7 @@ function splitparts (repr) {
 
 Renvoie une mélodie ou des accords en fonction de la notation
 
-Melodie avec des lettres minuscules et des < ou >
+Mélodie avec des lettres minuscules et des < ou >
 <<<< = demi croche
 <<< = demi croche pointée
 <<c = croche

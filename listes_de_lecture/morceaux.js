@@ -84,4 +84,19 @@ var liste_de_lecture = {
 |	F	Bb	|	F  	Bb  	|	F7M	 :||
 `},
 
+"05": {
+		"titre" : "On est là",
+		"accompagnement" : `
+|| 4/4 ||
+|| 120 ||
+|| Piano ||
+|| Basse ||
+|| Batterie ||
+|| d d d <e <d | c>>> <e <f | g>>> <e <f | <g <g <g <g <g <e <c <e |
+| d>>> <d <e | <f <f <f <f f <e <d | <e <e <e <e e | <c <e <d <d <d <d <d <c
+| <b <d c>>> ||
+||:	G7	|	C6	|	C7	|C7	B7	Am7	Ab7|	G7	|
+|	G9 	|	C7 |	Dm7	G7	|	C6/9	:||
+`},
+
 }
