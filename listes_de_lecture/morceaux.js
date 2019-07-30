@@ -94,10 +94,10 @@ var liste_de_lecture = {
 | d5>>> <d5 <e5 | <f5 <f5 <f5 <f5 f5 <e5 <d5 | <e5 <e5 <e5 <e5 e5 | <c5 <e5 <d5 <d5 <d5 <d5 <d5 <c5
 | <b <d5 c5>>> :||
 || Piano ||
-|| Basse ||
-|| Batterie ||
 ||:	G7	|	C6/9	|	C9	|C7	B7	Am7	Ab7|	G7	|
 |	G9 	|	C7 |	Dm9	G13	|	C6/9	:||
+|| Basse ||
+|| Batterie ||
 `},
 
 }
