@@ -184,29 +184,29 @@ function splitMeasures (repr, cadence) {
 					// console.log(note,duree);
 					
 					switch(duree) {
-						case ">>>>":
+						case ">>>>": // Ronde
 							duree = 4 ;
 							break;
-						case ">>>":
+						case ">>>": // Blanche pointée
 							duree = 3 ;
 							break;
-						case ">>":
+						case ">>": // Blanche
 							duree = 2 ;
 							break;
-						case ">":
+						case ">": // Noire pointée
 							duree = 1.5 ;
 							break;
-						case "<":
-							duree = 1/2 ;
+						case "<": // Croche pointée
+							duree = 0.75 ;
 							break;
-						case "<<":
-							duree = 1/4 ;
+						case "<<": // Croche
+							duree = 0.5 ;
 							break;
-						case "<<<":
-							duree = 1/16 ;
+						case "<<<": // Demie croche pointée
+							duree = 0.375 ;
 							break;
-						case "<<<<":
-							duree = 1/12 ;
+						case "<<<<": // Demie croche
+							duree = 0.25 ;
 							break;
 						default:
 							duree = 1 ;
